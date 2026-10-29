@@ -10,9 +10,14 @@ homelab-kube commits nothing site-specific, so a cluster provides these itself, 
 | A highly available API address | `kubectl` and nodes keep working when a server is down | kube-vip (ARP), as a DaemonSet on the servers |
 | A LoadBalancer implementation and an address pool | Argo CD, Headlamp and Traefik get addresses | kube-vip's cloud provider, with the pool in the `kube-system/kubevip` ConfigMap |
 | An ingress controller | (Planned) routes to apps | k3s' bundled Traefik |
+| A dedicated disk on every agent, mounted at `/var/lib/longhorn`, plus `open-iscsi` (with `iscsid` running) and `nfs-common` | Longhorn's volumes | a 100 GB ext4 disk labelled `longhorn`; multipathd told to ignore `sd*` devices |
 | DNS names, a reverse proxy, TLS | friendly names and certificates | outside the cluster |
 
-The servers are tainted `CriticalAddonsOnly=true:NoExecute`, so apps run on the agents only.
+The servers are tainted `CriticalAddonsOnly=true:NoExecute`, so apps (and Longhorn's replicas) run on the agents only.
+
+k3s also installs its `local-path` StorageClass and marks it default. With two defaults, Kubernetes uses the newest
+(`longhorn`) for a claim that names none; the apps here always name `storageClassName: longhorn`. To have one
+default only, add `local-storage` to `disable:` in each server's k3s config.
 
 Keep these settings with the cluster's own notes, never in this repository: the policy check and CI refuse
 private addresses and internal names (`scripts/check_manifests.py`).

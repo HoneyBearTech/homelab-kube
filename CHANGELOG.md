@@ -8,6 +8,8 @@ All notable changes to homelab-kube are documented here. The format follows
 
 ### Added
 
+- Longhorn 1.13.0 (Helm chart): replicated block storage on the agents, as the default StorageClass `longhorn`
+  with two replicas and `Retain` reclaim; the UI stays ClusterIP; synced with server-side apply.
 - `bootstrap/root.yaml`: the root Argo CD Application ("app of apps") that syncs every Application in `apps/` from
   `main`, with automated sync, pruning and self-heal.
 - Headlamp 0.46.0 (Helm chart), the cluster's web UI, on a LoadBalancer address; its own ServiceAccount has no

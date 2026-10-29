@@ -42,10 +42,12 @@ and image version-pinned, kept as code so a merge to `main` is a deploy and a re
   - **headlamp**: [Headlamp](https://headlamp.dev), the cluster's web UI, from its Helm chart, on a LoadBalancer
     address. Its own ServiceAccount gets no cluster role; it acts with the token you log in with.
   - **headlamp-access**: the `headlamp-admin` ServiceAccount you log in to Headlamp with.
+  - **longhorn**: [Longhorn](https://longhorn.io) replicated block storage on the agents' dedicated disks, as the
+    default StorageClass `longhorn` (two replicas, volumes kept when a claim is deleted).
 - [`manifests/`](manifests/): plain manifests the Applications point at.
 - [`scripts/check_manifests.py`](scripts/check_manifests.py): the policy check CI runs on every change.
 
-Planned (see the [roadmap](docs/roadmap.md)): Longhorn storage, a media volume, and a trial of media apps.
+Planned (see the [roadmap](docs/roadmap.md)): a media volume and a trial of media apps.
 
 ## Getting started
 
