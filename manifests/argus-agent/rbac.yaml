@@ -1,0 +1,32 @@
+# What the agent may read through the API: its node's kubelet metrics (cAdvisor; the kubelet asks the API server)
+# and pods, to find the log files of the pods on its node. Nothing else, and nothing it can change.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: argus-agent
+  namespace: argus
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: argus-agent
+rules:
+  - apiGroups: [""]
+    resources: [nodes/metrics]
+    verbs: [get]
+  - apiGroups: [""]
+    resources: [pods]
+    verbs: [get, list, watch]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: argus-agent
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: argus-agent
+subjects:
+  - kind: ServiceAccount
+    name: argus-agent
+    namespace: argus

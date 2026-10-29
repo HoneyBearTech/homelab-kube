@@ -1,0 +1,23 @@
+# The Argus agent on every node (manifests/argus-agent/): node and container metrics and pod logs, pushed to an
+# Argus server (https://github.com/HoneyBearTech/Argus, docs/kubernetes.md). The server's addresses and password
+# are in the Secret argus/argus-agent, created by hand before the first sync (docs/argus-agent.md).
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argus-agent
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/HoneyBearTech/homelab-kube.git
+    targetRevision: main
+    path: manifests/argus-agent
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argus
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
