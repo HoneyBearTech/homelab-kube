@@ -70,6 +70,11 @@ order:
 4. **Settings → Import Lists**: disable every list, so nothing new is added and searched.
 5. **Settings → General**: check that *URL Base* shows `/sonarr-k8s` (it comes from the environment).
 
+**Allowed Hosts.** A config that lists *Allowed Hosts* (Settings → General) answers 400 to any other Host header,
+including Traefik's address. Reach the app through a name the list already allows (for example a reverse proxy
+name that forwards to Traefik's address and keeps the Host header), then add what you need. The health checks use
+TCP, so they don't depend on it.
+
 The network policy already blocks the private network, so a step missed here fails rather than acts; the
 checklist makes sure it never tries. The app will warn that its root folders aren't writable: that's expected.
 

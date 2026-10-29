@@ -55,12 +55,14 @@ spec:
           volumeMounts:
             - {name: config, mountPath: /config}
             - {name: media, mountPath: /media, readOnly: true}
+          # TCP, not HTTP: the copied config's Allowed Hosts answers 400 to any Host header it doesn't list, such as
+          # the pod's own address the kubelet would send.
           startupProbe:
-            httpGet: {path: /sonarr-k8s/ping, port: http}
+            tcpSocket: {port: http}
             periodSeconds: 10
             failureThreshold: 60
           livenessProbe:
-            httpGet: {path: /sonarr-k8s/ping, port: http}
+            tcpSocket: {port: http}
             periodSeconds: 60
             timeoutSeconds: 10
           resources:
