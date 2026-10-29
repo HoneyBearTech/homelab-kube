@@ -11,7 +11,7 @@ import or notify anything, and never write to the library.
 | The media is read-only: the NFS export, the mount options, the volume and the container mount | the `media-nfs` volume (applied by hand) and `manifests/media-trial/*.yaml` |
 | No traffic to any private network: download clients, indexer proxies and media servers are unreachable | [`network-policy.yaml`](../manifests/media-trial/network-policy.yaml) |
 | Downloads, RSS sync, automatic search and connections are switched off in each app before it's used | the checklist below |
-| The apps start at 0 replicas, so nothing runs until its config is in place | `replicas: 0` in each Deployment |
+| Each app ran only once its config was in place (they started at 0 replicas; both run since the configs were loaded) | `replicas` in each Deployment |
 
 ## The media volume
 
@@ -23,7 +23,10 @@ as in the Compose stack, so the root folders in the copied databases match.
 
 ## Copying a config in
 
-For each app (`sonarr`, `radarr`), with its Deployment still at 0 replicas.
+For each app (`sonarr`, `radarr`), with its Deployment at 0 replicas (set it to 0 by pull request first if it's running).
+A large `MediaCover` folder can be left out of the archive (`--exclude=config/MediaCover`): the app downloads the
+posters again. Streaming the archive into `tar` through `kubectl exec -i` is faster and more reliable than
+`kubectl cp` for big archives.
 
 **1. On the Compose host**, after that night's backup, stop the app so its SQLite database is consistent, archive
 its config without logs and backups, and start it again:
