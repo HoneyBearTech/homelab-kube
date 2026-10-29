@@ -1,0 +1,21 @@
+# The one manifest applied by hand (docs/installing.md): an Argo CD Application that syncs every Application
+# in apps/ from this repository's main branch ("app of apps"). After this, a merge to main deploys.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: root
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/HoneyBearTech/homelab-kube.git
+    targetRevision: main
+    path: apps
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      # An Application removed from apps/ is removed from the cluster; manual changes to them are reverted.
+      prune: true
+      selfHeal: true

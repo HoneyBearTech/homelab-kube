@@ -1,0 +1,33 @@
+name: Bug report
+description: An app doesn't sync or start, a manifest is wrong after an upgrade, or the docs are wrong.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: >-
+        Thanks for reporting. **Security problems go to the private form instead** (see SECURITY.md).
+        Leave out passwords, tokens, hostnames, domains, IP addresses and paths: replace them with placeholders.
+        A bug in k3s, Argo CD, Headlamp or another upstream chart itself belongs with that project.
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: >-
+        The homelab-kube release (for example 0.1.0) or commit Argo CD runs, and your k3s and Argo CD versions.
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened, and what did you expect?
+      description: Which Application, and what you did (for example "merged the PR that bumps the Headlamp chart").
+    validations:
+      required: true
+  - type: textarea
+    id: log
+    attributes:
+      label: Log output
+      description: >-
+        The Application's sync status and events (`kubectl -n argocd describe application <name>`) or the pod's
+        logs. Check them for tokens and domains before pasting.
+      render: text

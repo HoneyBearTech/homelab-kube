@@ -1,0 +1,37 @@
+name: Dependabot auto-merge
+
+# Turns on GitHub's auto-merge for Dependabot's patch, minor and major update PRs, so they're squash-merged once
+# every required check passes (the main ruleset still decides). Dependabot only updates the check tools and the
+# Actions here, never what runs in the cluster. Nothing is checked out or run from the PR; the job only reads
+# Dependabot's metadata and calls `gh`.
+on: pull_request
+
+permissions:
+  contents: read
+
+jobs:
+  auto-merge:
+    name: Enable auto-merge
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    if: github.event.pull_request.user.login == 'dependabot[bot]' && github.repository == 'HoneyBearTech/homelab-kube'
+    # Only this job writes, to turn on auto-merge for the PR.
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Dependabot metadata
+        id: metadata
+        uses: dependabot/fetch-metadata@25dd0e34f4fe68f24cc83900b1fe3fe149efef98 # v3.1.0
+        with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Enable auto-merge for version updates
+        if: >-
+          steps.metadata.outputs.update-type == 'version-update:semver-patch' ||
+          steps.metadata.outputs.update-type == 'version-update:semver-minor' ||
+          steps.metadata.outputs.update-type == 'version-update:semver-major'
+        run: gh pr merge --auto --squash "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,22 @@
+version: 2
+# Patch, minor and major updates of the check tools and Actions are auto-merged once every required check passes
+# (workflows/dependabot-auto-merge.yml). Dependabot can't read the Helm chart versions in Argo CD Applications;
+# those are bumped by hand, by PR (docs/upgrading.md), and a merge deploys them.
+updates:
+  # The check and test tools (requirements-dev.txt), pinned with hashes.
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    assignees: ["HoneyBearTech"]
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    assignees: ["HoneyBearTech"]
+    groups:
+      # init, analyze and upload-sarif must share one version.
+      codeql:
+        patterns:
+          - "github/codeql-action*"

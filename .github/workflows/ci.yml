@@ -1,0 +1,107 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    # The required status check on main; keep this name (the branch ruleset refers to it).
+    name: Checks + tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 0 # gitleaks scans the whole history, not just this commit
+
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.14"
+
+      - name: Install the check and test tools
+        run: python -m pip install --require-hashes --no-deps -r requirements-dev.txt
+
+      # Coding standards (CONTRIBUTING.md#coding-standards). Any finding fails the build.
+      - name: Lint Python (ruff)
+        run: |
+          ruff check --output-format github .
+          ruff format --check .
+
+      - name: Lint YAML (yamllint)
+        run: yamllint --strict --format github .
+
+      # Docker Hub limits anonymous pulls per address, and the runners share theirs. With the project's read-only
+      # Docker Hub token (GOVERNANCE.md#the-projects-own-secrets) the pull counts against its account instead.
+      # Fork pull requests get no secrets and pull anonymously.
+      - name: Log in to Docker Hub
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: |
+          if [ -z "$DOCKERHUB_TOKEN" ]; then
+            echo "::notice::No Docker Hub token; pulling anonymously"
+            exit 0
+          fi
+          printf '%s' "$DOCKERHUB_TOKEN" | docker login --username "$DOCKERHUB_USERNAME" --password-stdin
+
+      - name: Lint workflows (actionlint, with shellcheck)
+        run: >-
+          docker run --rm -v "$PWD:/repo:ro" -w /repo
+          rhysd/actionlint:1.7.12@sha256:b1934ee5f1c509618f2508e6eb47ee0d3520686341fec936f3b79331f9315667 -color
+
+      - name: Log out of Docker Hub
+        if: always()
+        run: docker logout
+
+      # The checkout belongs to another user inside the container, so git needs safe.directory, and the step
+      # fails if gitleaks ever scans nothing (it would otherwise report "no leaks found").
+      - name: No secrets in the repository or its history (gitleaks)
+        shell: bash
+        run: |
+          docker run --rm -v "$PWD:/repo:ro" \
+            -e GIT_CONFIG_COUNT=1 -e GIT_CONFIG_KEY_0=safe.directory -e GIT_CONFIG_VALUE_0=/repo \
+            ghcr.io/gitleaks/gitleaks:v8.30.1@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f \
+            git --redact --no-banner --no-color /repo 2>&1 | tee "$RUNNER_TEMP/gitleaks.log"
+          if grep -Eq ' 0 commits scanned|ERR' "$RUNNER_TEMP/gitleaks.log"; then
+            echo "::error::gitleaks didn't scan the history"
+            exit 1
+          fi
+
+      # Offline: generated manifests only, no cluster, no network. The floor is in pyproject.toml.
+      - name: Unit tests with coverage (pytest)
+        run: |
+          coverage run -m pytest
+          coverage report
+
+      # Pinned charts, git sources and images, no Secrets, nothing privileged, and nothing internal in any public
+      # file (scripts/check_manifests.py). The owner's own names are a secret regular expression, never in the repo;
+      # fork pull requests get no secrets and run the generic checks only.
+      - name: Manifest policy
+        env:
+          PUBLIC_SAFE_DENY: ${{ secrets.PUBLIC_SAFE_DENY }}
+        run: |
+          if [ -z "$PUBLIC_SAFE_DENY" ]; then
+            echo "::notice::No PUBLIC_SAFE_DENY secret; checking private addresses and internal domains only"
+          fi
+          python scripts/check_manifests.py
+
+      # Every manifest against the Kubernetes schemas and Argo CD's (from the CRDs catalog at a pinned commit).
+      - name: Validate manifests (kubeconform)
+        env:
+          KUBECONFORM_VERSION: v0.8.0
+          KUBECONFORM_SHA256: 9bc2bffbf71f261128533edaf912153948b7ff238f9a531ae6d34466ec287883
+          CRDS_CATALOG: https://raw.githubusercontent.com/datreeio/CRDs-catalog/3eb90d47aba8d61919d4419dd38301536e32a94b
+        run: |
+          curl -fsSLo "$RUNNER_TEMP/kubeconform.tar.gz" \
+            "https://github.com/yannh/kubeconform/releases/download/${KUBECONFORM_VERSION}/kubeconform-linux-amd64.tar.gz"
+          echo "${KUBECONFORM_SHA256}  $RUNNER_TEMP/kubeconform.tar.gz" | sha256sum --check --strict
+          tar -xzf "$RUNNER_TEMP/kubeconform.tar.gz" -C "$RUNNER_TEMP" kubeconform
+          "$RUNNER_TEMP/kubeconform" -strict -summary -schema-location default \
+            -schema-location "${CRDS_CATALOG}/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json" \
+            bootstrap apps manifests

@@ -1,0 +1,22 @@
+# The account the owner logs in to Headlamp with (manifests/headlamp-access/). Its tokens are short-lived and
+# made on demand with `kubectl create token`; none is stored in the cluster or in this repository.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: headlamp-access
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/HoneyBearTech/homelab-kube.git
+    targetRevision: main
+    path: manifests/headlamp-access
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: headlamp
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

@@ -1,0 +1,8 @@
+# Tools for the checks and tests (the cluster itself needs none of them). Pinned with hashes in
+# requirements-dev.txt, regenerated with:
+#   uv pip compile --generate-hashes --universal requirements-dev.in -o requirements-dev.txt
+coverage
+pytest
+pyyaml
+ruff
+yamllint
