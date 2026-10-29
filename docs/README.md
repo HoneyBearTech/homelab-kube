@@ -6,6 +6,7 @@ Start with the [README](../README.md) for what homelab-kube is and how to run it
 | --- | --- |
 | [Quick start](quick-start.md) | From a running k3s cluster to Argo CD and Headlamp |
 | [Installing](installing.md) | What the cluster needs first, Argo CD, the root Application, running it securely, uninstalling |
+| [Media trial](media-trial.md) | Sonarr and Radarr on copied configs: the guards, copying a config in, the checklist |
 | [Upgrading](upgrading.md) | Bumping a chart, upgrading Argo CD and k3s, and rolling back |
 | [Architecture](architecture.md) | The cluster, the Applications, and how a change reaches the cluster |
 | [Interfaces](interfaces.md) | Every Application, setting, annotation and command |
