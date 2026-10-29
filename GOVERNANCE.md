@@ -35,7 +35,8 @@ reasoning, and may change course. Because the code is MIT-licensed, you can alwa
 Automated tools also take part: Dependabot proposes updates to the Python check tools and the GitHub Actions
 (patch, minor and major updates merge automatically once every required check passes), and CI with the manifest
 policy check, schema validation, CodeQL, dependency review and OpenSSF Scorecard check every change. Helm chart
-versions are bumped by pull request; a merge deploys to the maintainer's cluster through Argo CD.
+versions and manifest images are proposed by Renovate (the Mend Renovate GitHub App), as pull requests the maintainer
+merges by hand; a merge deploys to the maintainer's cluster through Argo CD.
 
 ## Access to sensitive resources
 
@@ -51,7 +52,7 @@ Who can change the code, releases and project settings, as of the date of this f
 | The OpenSSF Best Practices badge entry | the maintainer | GitHub sign-in |
 | Pulling public images from Docker Hub in CI without the anonymous rate limit | the workflow step that logs in (CI) | a Docker Hub access token limited to reading public repositories |
 | Security advisories and private vulnerability reports | the maintainer | GitHub |
-| Automated changes | Dependabot (pull requests only); the auto-merge workflow turns on auto-merge for its patch, minor and major updates, which GitHub merges only after every required check passes | GitHub, short-lived `GITHUB_TOKEN` |
+| Automated changes | Dependabot and Renovate (pull requests only; Renovate through its GitHub App, with read and write access to this repository's contents and pull requests); the auto-merge workflow turns on auto-merge for its patch, minor and major updates, which GitHub merges only after every required check passes | GitHub, short-lived `GITHUB_TOKEN` |
 
 There are no other collaborators. Workflows use the per-job `GITHUB_TOKEN`, read-only unless a job asks for
 more, and repository secrets are only available to the workflows that name them, never to pull requests
