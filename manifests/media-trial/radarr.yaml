@@ -43,9 +43,6 @@ spec:
             - {name: PGID, value: "1000"}
             - {name: TZ, value: Etc/UTC}
             - {name: UMASK, value: "002"}
-            # .NET's write-xor-execute mapping: the app crashed with SIGSEGV every few seconds on these nodes
-            # (kernel 7.0), while the same image and config run fine on kernel 6.8. Off, as a test.
-            - {name: DOTNET_EnableWriteXorExecute, value: "0"}
             - {name: RADARR__SERVER__URLBASE, value: /radarr-k8s}
           ports:
             - {name: http, containerPort: 7878}
@@ -68,9 +65,10 @@ spec:
             tcpSocket: {port: http}
             periodSeconds: 60
             timeoutSeconds: 10
+          # No memory limit (as in the Compose stack): with one, .NET runs its GC under a hard heap limit, and both apps
+          # crashed every few seconds with a general protection fault in musl from the GC and thread-pool threads.
           resources:
             requests: {cpu: 100m, memory: 256Mi}
-            limits: {memory: 1Gi}
       volumes:
         - name: config
           persistentVolumeClaim: {claimName: radarr-config}
