@@ -35,6 +35,11 @@ spec:
       labels:
         app.kubernetes.io/name: radarr
     spec:
+      # The container runtime's default seccomp profile, as Docker applies in the Compose stack (pods are unconfined
+      # otherwise). Also a test: the apps crash every few seconds with a general protection fault in musl here.
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: radarr
           image: lscr.io/linuxserver/radarr:version-6.4.4.10685@sha256:cfbc4fa09dc9d78f7cedc898f4ec48c6277cacedc523c4e159db6ff1c741959c
@@ -65,10 +70,9 @@ spec:
             tcpSocket: {port: http}
             periodSeconds: 60
             timeoutSeconds: 10
-          # No memory limit (as in the Compose stack): with one, .NET runs its GC under a hard heap limit, and both apps
-          # crashed every few seconds with a general protection fault in musl from the GC and thread-pool threads.
           resources:
             requests: {cpu: 100m, memory: 256Mi}
+            limits: {memory: 1Gi}
       volumes:
         - name: config
           persistentVolumeClaim: {claimName: radarr-config}

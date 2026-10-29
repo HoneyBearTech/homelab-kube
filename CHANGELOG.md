@@ -8,9 +8,9 @@ All notable changes to homelab-kube are documented here. The format follows
 
 ### Changed
 
-- The media trial's apps have no memory limit (as in the Compose stack), to test whether .NET's GC under a hard
-  heap limit causes their crashes (a general protection fault in musl every few seconds). The
-  `DOTNET_EnableWriteXorExecute=0` test is reverted: it made no difference.
+- The media trial's apps run under the container runtime's default seccomp profile (`RuntimeDefault`), as Docker
+  applies in the Compose stack; also a test for their crashes (a general protection fault in musl every few
+  seconds). Tests that made no difference were reverted: `DOTNET_EnableWriteXorExecute=0`, and no memory limit.
 - The media trial's health checks are TCP port checks: the copied configs' Allowed Hosts answered 400 to the
   kubelet's HTTP checks.
 - The media trial's Sonarr and Radarr run (1 replica each) now that their configs are copied in.

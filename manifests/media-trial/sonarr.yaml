@@ -35,6 +35,11 @@ spec:
       labels:
         app.kubernetes.io/name: sonarr
     spec:
+      # The container runtime's default seccomp profile, as Docker applies in the Compose stack (pods are unconfined
+      # otherwise). Also a test: the apps crash every few seconds with a general protection fault in musl here.
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: sonarr
           image: lscr.io/linuxserver/sonarr:version-4.0.20.3014@sha256:0deb8db6c839ac475e9cd86277712772c40ba7f929a003d7e1de36c4b666bc13
@@ -65,10 +70,9 @@ spec:
             tcpSocket: {port: http}
             periodSeconds: 60
             timeoutSeconds: 10
-          # No memory limit (as in the Compose stack): with one, .NET runs its GC under a hard heap limit, and both apps
-          # crashed every few seconds with a general protection fault in musl from the GC and thread-pool threads.
           resources:
             requests: {cpu: 100m, memory: 256Mi}
+            limits: {memory: 1Gi}
       volumes:
         - name: config
           persistentVolumeClaim: {claimName: sonarr-config}
