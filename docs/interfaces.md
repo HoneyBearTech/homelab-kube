@@ -31,6 +31,7 @@ Every Application uses the `default` project, automated sync with `prune` and `s
 | `defaultSettings.defaultReplicaCount` | `2` | the same for volumes made outside the StorageClass |
 | `defaultSettings.replicaAutoBalance` | `best-effort` | spread replicas when an agent comes back |
 | `defaultSettings.storageMinimalAvailablePercentage` | `25` | stop scheduling replicas on a disk under 25 % free |
+| `defaultSettings.nodeDownPodDeletionPolicy` | `delete-both-statefulset-and-deployment-pod` | a pod stuck on a failed agent is deleted, so its volume moves with the replacement pod |
 | `longhornUI.replicas` / `service.ui.type` | `1` / `ClusterIP` | the UI has no login: not given an address |
 
 The Application syncs with `ServerSideApply=true` (Longhorn's CRDs are too large for client-side apply).
