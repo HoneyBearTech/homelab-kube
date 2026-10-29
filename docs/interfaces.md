@@ -7,6 +7,7 @@
 | `bootstrap/root.yaml` | root | this repository, `apps/` | `main` | argocd |
 | `apps/headlamp.yaml` | headlamp | Helm `https://kubernetes-sigs.github.io/headlamp/`, chart `headlamp` | 0.46.0 | headlamp |
 | `apps/headlamp-access.yaml` | headlamp-access | this repository, `manifests/headlamp-access/` | `main` | headlamp |
+| `apps/longhorn.yaml` | longhorn | Helm `https://charts.longhorn.io`, chart `longhorn` | 1.13.0 | longhorn-system |
 
 Every Application uses the `default` project, automated sync with `prune` and `selfHeal`, and `CreateNamespace=true`.
 
@@ -17,6 +18,21 @@ Every Application uses the `default` project, automated sync with `prune` and `s
 | `clusterRoleBinding.create` | `false` | the pod's ServiceAccount gets no cluster role; Headlamp acts with the login token |
 | `service.type` / `service.port` | `LoadBalancer` / `80` | its own address from the cluster's pool |
 | `resources` | requests 50m CPU, 128 MiB; limit 512 MiB | small, predictable footprint |
+
+## Longhorn values
+
+| Value | Setting | Why |
+| --- | --- | --- |
+| `preUpgradeChecker.jobEnabled` | `false` | Longhorn's documented setting for Argo CD |
+| `persistence.defaultClass` / `defaultClassReplicaCount` | `true` / `2` | the default StorageClass `longhorn`, two copies on different agents |
+| `persistence.reclaimPolicy` | `Retain` | a pruned or deleted claim keeps its volume |
+| `defaultSettings.defaultDataPath` | `/var/lib/longhorn` | each agent's dedicated disk |
+| `defaultSettings.defaultReplicaCount` | `2` | the same for volumes made outside the StorageClass |
+| `defaultSettings.replicaAutoBalance` | `best-effort` | spread replicas when an agent comes back |
+| `defaultSettings.storageMinimalAvailablePercentage` | `25` | stop scheduling replicas on a disk under 25 % free |
+| `longhornUI.replicas` / `service.ui.type` | `1` / `ClusterIP` | the UI has no login: not given an address |
+
+The Application syncs with `ServerSideApply=true` (Longhorn's CRDs are too large for client-side apply).
 
 ## Objects
 

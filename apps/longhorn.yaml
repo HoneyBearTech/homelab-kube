@@ -1,0 +1,48 @@
+# Longhorn (https://longhorn.io): replicated block storage for app data (configs, databases), from its Helm chart.
+# Volumes live on each agent's dedicated disk at /var/lib/longhorn (docs/installing.md#what-the-cluster-provides).
+# The servers' CriticalAddonsOnly taint keeps Longhorn, and so every replica, on the agents.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: longhorn
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://charts.longhorn.io
+    chart: longhorn
+    targetRevision: 1.13.0
+    helm:
+      valuesObject:
+        # Longhorn's documented setting for Argo CD: its pre-upgrade hook job doesn't fit a GitOps sync.
+        preUpgradeChecker:
+          jobEnabled: false
+        persistence:
+          defaultClass: true
+          # Two copies on two different agents: one agent (or its Proxmox node) can be lost without losing data.
+          defaultClassReplicaCount: 2
+          # A deleted claim (for example when an app is removed from apps/ and pruned) keeps its volume until it
+          # is removed on purpose.
+          reclaimPolicy: Retain
+        defaultSettings:
+          defaultDataPath: /var/lib/longhorn
+          defaultReplicaCount: 2
+          replicaAutoBalance: best-effort
+          storageMinimalAvailablePercentage: 25
+        longhornUI:
+          replicas: 1
+        # The UI has no login of its own: it stays ClusterIP (reach it with kubectl port-forward or through Headlamp).
+        service:
+          ui:
+            type: ClusterIP
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: longhorn-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      # Longhorn's CRDs are too large for client-side apply's last-applied annotation.
+      - ServerSideApply=true

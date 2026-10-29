@@ -12,7 +12,8 @@ cluster (addresses, names, sizes) are kept by its owner, never in this repositor
 ```
 bootstrap/root.yaml ──► Application "root" ──► apps/*.yaml
                                                  ├─ headlamp         Helm chart (kubernetes-sigs/headlamp)
-                                                 └─ headlamp-access  manifests/headlamp-access/
+                                                 ├─ headlamp-access  manifests/headlamp-access/
+                                                 └─ longhorn         Helm chart (longhorn/longhorn)
 ```
 
 | Application | Namespace | What | Reached at |
@@ -20,6 +21,7 @@ bootstrap/root.yaml ──► Application "root" ──► apps/*.yaml
 | root | argocd | syncs `apps/` | — |
 | headlamp | headlamp | the web UI | LoadBalancer address, port 80 |
 | headlamp-access | headlamp | the `headlamp-admin` login account | — |
+| longhorn | longhorn-system | replicated block storage, StorageClass `longhorn` (default) | UI: ClusterIP only |
 
 Argo CD itself is installed by Helm, outside this repository ([installing.md](installing.md#argo-cd)).
 
@@ -39,6 +41,6 @@ commit (polling, about every three minutes) → sync, pruning removed objects �
 
 ## Planned
 
-- Longhorn on the agents for app data (block storage, replicated), and a media volume over NFS.
+- A media volume over NFS.
 - A trial of media apps with copied settings, read-only media and no downloads.
 - Argo CD managing its own Helm release from this repository.
