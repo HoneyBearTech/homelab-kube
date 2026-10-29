@@ -24,6 +24,7 @@ and image version-pinned, kept as code so a merge to `main` is a deploy and a re
 - [Installing](docs/installing.md): what the cluster needs first, installing Argo CD, the root Application,
   running it securely, uninstalling
 - [Upgrading](docs/upgrading.md): bumping a chart, upgrading Argo CD and k3s, rolling back
+- [Media trial](docs/media-trial.md): Sonarr and Radarr on copied configs, what keeps them harmless, copying a config in
 - [Architecture](docs/architecture.md): the cluster, the Applications, and how a change reaches the cluster
 - [Interfaces](docs/interfaces.md): every Application, setting, annotation and command
 - [Verifying releases](docs/verifying-releases.md): checking signatures, checksums, provenance and the SBOM
@@ -44,10 +45,12 @@ and image version-pinned, kept as code so a merge to `main` is a deploy and a re
   - **headlamp-access**: the `headlamp-admin` ServiceAccount you log in to Headlamp with.
   - **longhorn**: [Longhorn](https://longhorn.io) replicated block storage on the agents' dedicated disks, as the
     default StorageClass `longhorn` (two replicas, volumes kept when a claim is deleted).
+  - **media-trial**: Sonarr and Radarr beside a Compose stack, on copied configs, with read-only media and no
+    access to the private network ([docs/media-trial.md](docs/media-trial.md)). They start at 0 replicas.
 - [`manifests/`](manifests/): plain manifests the Applications point at.
 - [`scripts/check_manifests.py`](scripts/check_manifests.py): the policy check CI runs on every change.
 
-Planned (see the [roadmap](docs/roadmap.md)): a media volume and a trial of media apps.
+Planned: see the [roadmap](docs/roadmap.md).
 
 ## Getting started
 

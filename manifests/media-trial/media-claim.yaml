@@ -1,0 +1,18 @@
+# The media library, read-only, shared by every app in this namespace. It binds to the PersistentVolume
+# "media-nfs", which the cluster's owner applies by hand: it holds the NFS server's address, which this public
+# repository never does (docs/media-trial.md#the-media-volume).
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: media
+  namespace: media-trial
+  annotations:
+    # Never deleted by a sync, even if this file is removed.
+    argocd.argoproj.io/sync-options: Delete=false
+spec:
+  accessModes: [ReadOnlyMany]
+  storageClassName: ""
+  volumeName: media-nfs
+  resources:
+    requests:
+      storage: 1Ti

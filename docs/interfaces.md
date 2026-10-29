@@ -7,6 +7,7 @@
 | `bootstrap/root.yaml` | root | this repository, `apps/` | `main` | argocd |
 | `apps/headlamp.yaml` | headlamp | Helm `https://kubernetes-sigs.github.io/headlamp/`, chart `headlamp` | 0.46.0 | headlamp |
 | `apps/headlamp-access.yaml` | headlamp-access | this repository, `manifests/headlamp-access/` | `main` | headlamp |
+| `apps/media-trial.yaml` | media-trial | this repository, `manifests/media-trial/` | `main` | media-trial |
 | `apps/longhorn.yaml` | longhorn | Helm `https://charts.longhorn.io`, chart `longhorn` | 1.13.0 | longhorn-system |
 
 Every Application uses the `default` project, automated sync with `prune` and `selfHeal`, and `CreateNamespace=true`.
@@ -38,6 +39,11 @@ The Application syncs with `ServerSideApply=true` (Longhorn's CRDs are too large
 
 | Object | Purpose |
 | --- | --- |
+| PVC `media-trial/media` (ReadOnlyMany, `volumeName: media-nfs`) | the media library, read-only, for every trial app |
+| PVC `media-trial/sonarr-config`, `radarr-config` (Longhorn, 10 GiB) | each app's `/config` |
+| Deployments `sonarr`, `radarr` (0 replicas until loaded) | the apps; URL base from `SONARR__SERVER__URLBASE` / `RADARR__SERVER__URLBASE` |
+| Ingress `sonarr`, `radarr` (class `traefik`, no host) | `/sonarr-k8s`, `/radarr-k8s` on Traefik's address |
+| NetworkPolicy `trial-egress` | DNS in the cluster and the internet only; no private networks |
 | ServiceAccount `headlamp/headlamp-admin` | Headlamp login; no token is mounted or stored |
 | ClusterRoleBinding `headlamp-admin` → `cluster-admin` | what that login may do |
 

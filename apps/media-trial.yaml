@@ -1,0 +1,22 @@
+# A trial of Sonarr and Radarr on the cluster, beside the Compose stack that stays live (manifests/media-trial/).
+# The apps start at 0 replicas: their configs are copied in first (docs/media-trial.md).
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: media-trial
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/HoneyBearTech/homelab-kube.git
+    targetRevision: main
+    path: manifests/media-trial
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: media-trial
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

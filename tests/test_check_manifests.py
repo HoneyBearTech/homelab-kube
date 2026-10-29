@@ -195,3 +195,14 @@ def test_main_fails_with_findings(
     root = make_repo(tmp_path, {"README.md": "example-site.org\n"})
     assert cm.main([str(root)]) == 1
     assert "denied name" in capsys.readouterr().out
+
+
+def test_well_known_ranges_as_cidrs_are_allowed(tmp_path: Path) -> None:
+    text = "except:\n  - 10.0.0.0/8\n  - 172.16.0.0/12\n  - 192.168.0.0/16\n  - 169.254.0.0/16\ncidr: 0.0.0.0/0\n"
+    assert findings(tmp_path, {"docs/np.md": text}) == []
+
+
+def test_site_ranges_and_hosts_are_still_refused(tmp_path: Path) -> None:
+    unsafe = (REPO / "tests/fixtures/site-ranges.md").read_text()
+    found = findings(tmp_path, {"docs/x.md": unsafe})
+    assert len(found) == 3

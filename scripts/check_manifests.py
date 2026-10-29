@@ -48,6 +48,13 @@ INTERNAL_DOMAIN = re.compile(r"\b[a-z0-9-]+\.(?:lan|home\.arpa|internal)\b", re.
 DENY_ENV = "PUBLIC_SAFE_DENY"
 # RFC 5737 documentation ranges may appear in examples.
 EXAMPLE_NETS = [ipaddress.ip_network(n) for n in ("192.0.2.0/24", "198.51.100.0/24", "203.0.113.0/24")]
+# The well-known special-use ranges themselves, written as CIDRs (as in a NetworkPolicy's "except" list), say nothing
+# about a particular site and are allowed; any other private address isn't.
+WELL_KNOWN_NETS = {
+    ipaddress.ip_network(n)
+    for n in ("0.0.0.0/0", "10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "100.64.0.0/10", "169.254.0.0/16")
+}
+PREFIX = re.compile(r"/(\d{1,2})\b")
 
 POD_KINDS = {"Pod", "Deployment", "StatefulSet", "DaemonSet", "ReplicaSet", "Job", "CronJob"}
 
@@ -141,6 +148,16 @@ def text_files(root: Path) -> list[Path]:
     )
 
 
+def well_known_cidr(address: ipaddress.IPv4Address | ipaddress.IPv6Address, prefix: re.Match[str] | None) -> bool:
+    """Whether an address followed by a prefix is exactly one of the well-known special-use ranges."""
+    if prefix is None:
+        return False
+    try:
+        return ipaddress.ip_network(f"{address}/{prefix.group(1)}") in WELL_KNOWN_NETS
+    except ValueError:  # host bits set, so it names an address, not a range
+        return False
+
+
 def public_safety(path: Path, text: str, deny: re.Pattern[str] | None = None) -> Iterator[str]:
     """Yield a message for every private address, internal domain or denied name in a file."""
     for number, line in enumerate(text.splitlines(), 1):
@@ -148,6 +165,8 @@ def public_safety(path: Path, text: str, deny: re.Pattern[str] | None = None) ->
             try:
                 address = ipaddress.ip_address(match.group(1))
             except ValueError:
+                continue
+            if well_known_cidr(address, PREFIX.match(line, match.end())):
                 continue
             if address.is_private and not address.is_loopback and not any(address in n for n in EXAMPLE_NETS):
                 yield f"{path}:{number}: private address {address}"
