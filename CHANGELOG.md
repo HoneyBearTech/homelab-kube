@@ -8,6 +8,9 @@ All notable changes to homelab-kube are documented here. The format follows
 
 ### Changed
 
+- Longhorn deletes Deployment and StatefulSet pods stuck on a failed agent (`nodeDownPodDeletionPolicy`), so their
+  volumes detach and the replacement pods start elsewhere; before, an app on a powered-off agent stayed down until
+  the agent returned.
 - The media trial's apps run under the container runtime's default seccomp profile (`RuntimeDefault`), as Docker
   applies in the Compose stack; also a test for their crashes (a general protection fault in musl every few
   seconds). Tests that made no difference were reverted: `DOTNET_EnableWriteXorExecute=0`, and no memory limit.

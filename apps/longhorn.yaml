@@ -29,6 +29,9 @@ spec:
           defaultReplicaCount: 2
           replicaAutoBalance: best-effort
           storageMinimalAvailablePercentage: 25
+          # When an agent goes down, delete the Deployment or StatefulSet pods stuck Terminating there, so their volumes
+          # can detach and the replacement pods start elsewhere (the default, do-nothing, waits for the node to return).
+          nodeDownPodDeletionPolicy: delete-both-statefulset-and-deployment-pod
         longhornUI:
           replicas: 1
         # The UI has no login of its own: it stays ClusterIP (reach it with kubectl port-forward or through Headlamp).
