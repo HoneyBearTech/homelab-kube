@@ -6,6 +6,10 @@ All notable changes to homelab-kube are documented here. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- The media trial's Sonarr and Radarr run (1 replica each) now that their configs are copied in.
+
 ### Added
 
 - The media trial (`apps/media-trial.yaml`, `manifests/media-trial/`): Sonarr 4.0.20 and Radarr 6.4.4 (the same

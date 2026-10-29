@@ -46,7 +46,7 @@ and image version-pinned, kept as code so a merge to `main` is a deploy and a re
   - **longhorn**: [Longhorn](https://longhorn.io) replicated block storage on the agents' dedicated disks, as the
     default StorageClass `longhorn` (two replicas, volumes kept when a claim is deleted).
   - **media-trial**: Sonarr and Radarr beside a Compose stack, on copied configs, with read-only media and no
-    access to the private network ([docs/media-trial.md](docs/media-trial.md)). They start at 0 replicas.
+    access to the private network ([docs/media-trial.md](docs/media-trial.md)).
 - [`manifests/`](manifests/): plain manifests the Applications point at.
 - [`scripts/check_manifests.py`](scripts/check_manifests.py): the policy check CI runs on every change.
 

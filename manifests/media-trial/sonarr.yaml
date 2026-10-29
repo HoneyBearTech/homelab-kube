@@ -22,9 +22,9 @@ metadata:
   labels:
     app.kubernetes.io/name: sonarr
 spec:
-  # 0 until the config is copied in (docs/media-trial.md); then 1. Never more: the config volume is ReadWriteOnce
+  # 1, now that the config is copied in (docs/media-trial.md). Never more: the config volume is ReadWriteOnce
   # and the app's SQLite database allows one writer.
-  replicas: 0
+  replicas: 1
   strategy:
     type: Recreate
   selector:
