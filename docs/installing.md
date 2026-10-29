@@ -25,7 +25,10 @@ private addresses and internal names (`scripts/check_manifests.py`).
 ## Argo CD
 
 Argo CD itself is installed with Helm, once, by the cluster's owner ([quick start](quick-start.md#1-install-argo-cd)).
-It isn't (yet) managed from this repository, so it can't remove itself with a bad merge. Settings used:
+After that, [`apps/argocd.yaml`](../apps/argocd.yaml) adopts the release: Argo CD manages its own chart, so an upgrade is
+a pull request like any other. It is never pruned automatically, so a bad merge can't remove it; if a sync ever
+breaks Argo CD, roll back with `helm upgrade --version <previous>` from a server, then revert the pull request.
+The values in `apps/argocd.yaml` must match the ones the release was installed with:
 
 | Value | Setting | Why |
 | --- | --- | --- |

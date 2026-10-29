@@ -14,11 +14,12 @@ Renovate opens a pull request for each new chart version (and image digest); not
 
 ## Upgrading Argo CD
 
-Argo CD is installed with Helm (installing.md#argo-cd). Read the chart's upgrade notes first, then:
+Argo CD manages its own chart ([`apps/argocd.yaml`](../apps/argocd.yaml)): Renovate proposes the new version, and
+the merge upgrades it. Read the chart's upgrade notes first (CRD or values changes). If an upgrade leaves Argo CD
+unable to sync, it can't fix itself: roll back from a server with the chart's previous version, then revert the PR:
 
 ```sh
-helm repo update argo
-helm upgrade argocd argo/argo-cd --version <new> --namespace argocd --reuse-values
+helm upgrade argocd argo/argo-cd --version <previous> --namespace argocd --reuse-values
 ```
 
 ## Upgrading k3s

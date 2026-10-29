@@ -25,7 +25,7 @@ bootstrap/root.yaml ──► Application "root" ──► apps/*.yaml
 | media-trial | media-trial | Sonarr and Radarr on copied configs, read-only media ([media-trial.md](media-trial.md)) | Traefik: `/sonarr-k8s`, `/radarr-k8s` |
 | longhorn | longhorn-system | replicated block storage, StorageClass `longhorn` (default) | UI: ClusterIP only |
 
-Argo CD itself is installed by Helm, outside this repository ([installing.md](installing.md#argo-cd)).
+Argo CD itself was installed by Helm once and now manages its own release (`apps/argocd.yaml`; [installing.md](installing.md#argo-cd)).
 
 ## Actors
 
@@ -43,4 +43,3 @@ commit (polling, about every three minutes) → sync, pruning removed objects �
 
 ## Planned
 
-- Argo CD managing its own Helm release from this repository.

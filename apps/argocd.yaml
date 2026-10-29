@@ -1,0 +1,34 @@
+# Argo CD itself, from its Helm chart: the release first installed by hand (docs/installing.md#argo-cd), adopted
+# so that upgrades are pull requests too. The values must match that install, or the first sync changes it.
+# Not pruned automatically: a bad change here can't delete Argo CD; self-heal still reverts manual edits.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://argoproj.github.io/argo-helm
+    chart: argo-cd
+    targetRevision: 10.11.6
+    helm:
+      # The Helm release's name: the chart names every object after it (argocd-server, argocd-repo-server, ...).
+      releaseName: argocd
+      valuesObject:
+        server:
+          service:
+            type: LoadBalancer
+        dex:
+          enabled: false
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+    syncOptions:
+      # Argo CD's CRDs are too large for client-side apply; server-side apply also leaves alone the fields the chart
+      # doesn't set, such as the admin password in argocd-secret.
+      - ServerSideApply=true

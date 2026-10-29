@@ -20,6 +20,8 @@ All notable changes to homelab-kube are documented here. The format follows
 
 ### Added
 
+- `apps/argocd.yaml`: Argo CD manages its own Helm release (chart 10.11.6, release `argocd`, the install's values),
+  so upgrades are pull requests; never pruned automatically; server-side apply.
 - `renovate.json`: Renovate (Mend GitHub App) proposes Helm chart bumps in `apps/` and image bumps in
   `manifests/` as pull requests, weekly, never auto-merged; linuxserver.io `version-` tags compared as versions.
 - The media trial (`apps/media-trial.yaml`, `manifests/media-trial/`): Sonarr 4.0.20 and Radarr 6.4.4 (the same
