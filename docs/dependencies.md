@@ -21,7 +21,7 @@ A new chart, image or tool must:
 
 | Dependency | Declared in | Pinned by | Fetched by |
 | --- | --- | --- | --- |
-| Helm charts | `apps/*.yaml` (`targetRevision`) | exact chart version | Argo CD |
+| Helm charts | `apps/*.yaml` (`targetRevision`) | exact chart version (Renovate proposes bumps) | Argo CD |
 | Images in plain manifests | `manifests/` | version tag and digest | the cluster's nodes |
 | Images inside charts | the chart version | the chart's own pins | the cluster's nodes |
 | Check and test tools (pytest, coverage, PyYAML, ruff, yamllint) | [`requirements-dev.in`](../requirements-dev.in) → [`requirements-dev.txt`](../requirements-dev.txt) | exact version and SHA-256 hashes | `pip install --require-hashes --no-deps` |
@@ -37,9 +37,11 @@ To update the Python tools: `uv pip compile --generate-hashes --universal requir
 - **Dependabot** ([`.github/dependabot.yml`](../.github/dependabot.yml)) checks the Python tools and the Actions
   weekly and opens a pull request for each update; patch, minor and major updates are squash-merged automatically
   once every required check passes. Dependabot alerts and security updates are on.
-- **Helm charts are bumped by hand**: Dependabot can't read chart versions inside Argo CD Applications. The
-  maintainer checks each chart's releases at least monthly and bumps it by pull request
-  ([upgrading.md](upgrading.md#bumping-a-chart)). (Planned: Renovate, which can.)
+- **Renovate** ([`renovate.json`](../renovate.json), run by the Mend Renovate GitHub App) proposes Helm chart
+  bumps in `apps/` and image bumps (tag and digest) in `manifests/`, weekly, as pull requests, with a dependency
+  dashboard issue. **Nothing is merged automatically**: a merge deploys, so the maintainer reads the release notes
+  and merges by hand ([upgrading.md](upgrading.md#bumping-a-chart)). Dependabot can't read chart versions in Argo CD
+  Applications, so it keeps only the Python tools and the Actions.
 - **A merge deploys.** Argo CD syncs `main` automatically, so every merge reaches the maintainer's cluster within
   minutes.
 - **Dependency review** blocks a pull request that adds a Python or Actions dependency with a known vulnerability

@@ -20,6 +20,8 @@ All notable changes to homelab-kube are documented here. The format follows
 
 ### Added
 
+- `renovate.json`: Renovate (Mend GitHub App) proposes Helm chart bumps in `apps/` and image bumps in
+  `manifests/` as pull requests, weekly, never auto-merged; linuxserver.io `version-` tags compared as versions.
 - The media trial (`apps/media-trial.yaml`, `manifests/media-trial/`): Sonarr 4.0.20 and Radarr 6.4.4 (the same
   images as the Compose stack) at 0 replicas, each with a 10 GiB Longhorn config volume, the shared read-only media
   claim bound to a hand-applied volume, Traefik routes under `/sonarr-k8s` and `/radarr-k8s`, and a network policy

@@ -5,10 +5,10 @@ Every change reaches the cluster the same way: a pull request to `main`, CI, a m
 
 ## Bumping a chart
 
-Dependabot can't read Helm chart versions inside Argo CD Applications, so charts are bumped by hand:
+Renovate opens a pull request for each new chart version (and image digest); nothing merges by itself. For each:
 
 1. Read the chart's release notes and the app's: look for changed values, CRD changes and data migrations.
-2. Change `targetRevision` in `apps/<name>.yaml` to the new exact version, and adjust `valuesObject` if needed.
+2. Check the PR's change to `targetRevision`, and adjust `valuesObject` in the same PR if the chart needs it.
 3. Open a pull request linking the release notes; CI checks the pin and the schemas.
 4. After the merge, watch the Application turn **Synced** and **Healthy** in Argo CD.
 
