@@ -11,6 +11,7 @@ cluster (addresses, names, sizes) are kept by its owner, never in this repositor
 
 ```
 bootstrap/root.yaml ──► Application "root" ──► apps/*.yaml
+                                                 ├─ argus-agent      manifests/argus-agent/
                                                  ├─ headlamp         Helm chart (kubernetes-sigs/headlamp)
                                                  ├─ headlamp-access  manifests/headlamp-access/
                                                  ├─ longhorn         Helm chart (longhorn/longhorn)
@@ -20,6 +21,7 @@ bootstrap/root.yaml ──► Application "root" ──► apps/*.yaml
 | Application | Namespace | What | Reached at |
 | --- | --- | --- | --- |
 | root | argocd | syncs `apps/` | — |
+| argus-agent | argus | the Argus agent on every node: metrics and logs to Argus ([argus-agent.md](argus-agent.md)) | — |
 | headlamp | headlamp | the web UI | LoadBalancer address, port 80 |
 | headlamp-access | headlamp | the `headlamp-admin` login account | — |
 | media-trial | media-trial | Sonarr and Radarr on copied configs, read-only media ([media-trial.md](media-trial.md)) | Traefik: `/sonarr-k8s`, `/radarr-k8s` |
