@@ -3,10 +3,8 @@
 [![CI](https://github.com/HoneyBearTech/homelab-kube/actions/workflows/ci.yml/badge.svg)](https://github.com/HoneyBearTech/homelab-kube/actions/workflows/ci.yml)
 [![CodeQL](https://github.com/HoneyBearTech/homelab-kube/actions/workflows/codeql.yml/badge.svg)](https://github.com/HoneyBearTech/homelab-kube/actions/workflows/codeql.yml)
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/HoneyBearTech/homelab-kube/badge)](https://scorecard.dev/viewer/?uri=github.com/HoneyBearTech/homelab-kube)
-<!-- TODO: BP_ID
-[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/<BP_ID>/badge)](https://www.bestpractices.dev/projects/<BP_ID>)
-[![OpenSSF Baseline](https://www.bestpractices.dev/projects/<BP_ID>/baseline)](https://www.bestpractices.dev/projects/<BP_ID>)
--->
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/16098/badge)](https://www.bestpractices.dev/projects/16098)
+[![OpenSSF Baseline](https://www.bestpractices.dev/projects/16098/baseline)](https://www.bestpractices.dev/projects/16098)
 
 Kubernetes manifests for a small homelab k3s cluster, applied by Argo CD from this repository: every Helm chart
 and image version-pinned, kept as code so a merge to `main` is a deploy and a revert is a rollback.

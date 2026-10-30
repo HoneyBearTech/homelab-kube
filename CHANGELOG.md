@@ -6,41 +6,42 @@ All notable changes to homelab-kube are documented here. The format follows
 
 ## [Unreleased]
 
-### Changed
+## [0.1.0] - 2026-10-30
 
-- Longhorn deletes Deployment and StatefulSet pods stuck on a failed agent (`nodeDownPodDeletionPolicy`), so their
-  volumes detach and the replacement pods start elsewhere; before, an app on a powered-off agent stayed down until
-  the agent returned.
-- The media trial's apps run under the container runtime's default seccomp profile (`RuntimeDefault`), as Docker
-  applies in the Compose stack; also a test for their crashes (a general protection fault in musl every few
-  seconds). Tests that made no difference were reverted: `DOTNET_EnableWriteXorExecute=0`, and no memory limit.
-- The media trial's health checks are TCP port checks: the copied configs' Allowed Hosts answered 400 to the
-  kubelet's HTTP checks.
-- The media trial's Sonarr and Radarr run (1 replica each) now that their configs are copied in.
+The first release: a small k3s cluster driven from this repository by Argo CD.
 
 ### Added
 
-- `apps/argocd.yaml`: Argo CD manages its own Helm release (chart 10.11.6, release `argocd`, the install's values),
-  so upgrades are pull requests; never pruned automatically; server-side apply.
-- `renovate.json`: Renovate (Mend GitHub App) proposes Helm chart bumps in `apps/` and image bumps in
-  `manifests/` as pull requests, weekly, never auto-merged; linuxserver.io `version-` tags compared as versions.
-- The media trial (`apps/media-trial.yaml`, `manifests/media-trial/`): Sonarr 4.0.20 and Radarr 6.4.4 (the same
-  images as the Compose stack) at 0 replicas, each with a 10 GiB Longhorn config volume, the shared read-only media
-  claim bound to a hand-applied volume, Traefik routes under `/sonarr-k8s` and `/radarr-k8s`, and a network policy
-  that blocks every private network. `docs/media-trial.md` covers copying a config in and the checklist.
-- The policy check accepts the well-known special-use ranges written as CIDRs (`10.0.0.0/8`, `0.0.0.0/0`, ...);
-  any other private address is still refused.
-- Longhorn 1.13.0 (Helm chart): replicated block storage on the agents, as the default StorageClass `longhorn`
-  with two replicas and `Retain` reclaim; the UI stays ClusterIP; synced with server-side apply.
 - `bootstrap/root.yaml`: the root Argo CD Application ("app of apps") that syncs every Application in `apps/` from
   `main`, with automated sync, pruning and self-heal.
+- `apps/argocd.yaml`: Argo CD manages its own Helm release (chart argo-cd 10.11.6, release `argocd`), so upgrades
+  are pull requests; never pruned automatically; server-side apply.
 - Headlamp 0.46.0 (Helm chart), the cluster's web UI, on a LoadBalancer address; its own ServiceAccount has no
-  cluster role.
-- The `headlamp-admin` ServiceAccount (cluster-admin) for logging in to Headlamp with short-lived tokens.
+  cluster role. The `headlamp-admin` ServiceAccount (cluster-admin) for logging in with short-lived tokens.
+- Longhorn 1.13.0 (Helm chart): replicated block storage on the agents as the default StorageClass `longhorn`, two
+  replicas, `Retain` reclaim, the UI ClusterIP only; pods stuck on a failed agent are deleted
+  (`nodeDownPodDeletionPolicy`) so their volumes move with the replacement pods.
+- The Argus agent (`apps/argus-agent.yaml`, `manifests/argus-agent/`): a DaemonSet that sends every node's metrics
+  and logs to [Argus](https://github.com/HoneyBearTech/Argus) ([docs/argus-agent.md](docs/argus-agent.md)).
+- The media trial (`apps/media-trial.yaml`, `manifests/media-trial/`, [docs/media-trial.md](docs/media-trial.md)):
+  Sonarr 4.0.20 and Radarr 6.4.4 beside a Compose stack, on copied configs, each with a 10 GiB Longhorn config
+  volume, the media read-only from a hand-applied volume, Traefik routes under `/sonarr-k8s` and `/radarr-k8s`
+  (TCP health checks, since copied configs may restrict Allowed Hosts), `RuntimeDefault` seccomp, and a network
+  policy that blocks every private network.
 - `scripts/check_manifests.py`: the manifest policy (pinned charts, git sources and images; no Secrets; nothing
-  privileged; no private addresses or internal names in any public file), with unit tests and a CycloneDX SBOM of
-  the Helm charts for releases.
+  privileged without a reason; no private addresses or internal names in any public file, apart from the
+  well-known special-use ranges written as CIDRs), with unit tests and a CycloneDX SBOM of the Helm charts.
+- `renovate.json`: Renovate proposes Helm chart and image bumps as pull requests, weekly, never auto-merged.
 - CI (ruff, yamllint, actionlint, gitleaks, tests with coverage, the policy check, kubeconform), CodeQL, DCO,
   dependency review, OpenSSF Scorecard, Dependabot, and a release workflow that signs checksums keylessly and
   attaches SLSA provenance.
-- Project documentation and policies.
+- Project documentation and policies, with the OpenSSF Best Practices and Baseline badges.
+
+### Known issues
+
+- On Ubuntu kernel 7.0.0-42, .NET applications (such as Sonarr and Radarr) abort every few seconds on CPUs without
+  AVX2: the kernel logs a general protection fault in `abort()` of the C library. 7.0.0-38 is not affected. Run the
+  agents that host .NET apps on an unaffected kernel until a fixed one is released.
+
+[Unreleased]: https://github.com/HoneyBearTech/homelab-kube/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/HoneyBearTech/homelab-kube/releases/tag/v0.1.0
