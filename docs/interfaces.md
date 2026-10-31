@@ -9,6 +9,7 @@
 | `apps/headlamp-access.yaml` | headlamp-access | this repository, `manifests/headlamp-access/` | `main` | headlamp |
 | `apps/argocd.yaml` | argocd | Helm `https://argoproj.github.io/argo-helm`, chart `argo-cd` (release `argocd`) | 10.11.6 | argocd |
 | `apps/media-trial.yaml` | media-trial | this repository, `manifests/media-trial/` | `main` | media-trial |
+| `apps/longhorn-backups.yaml` | longhorn-backups | this repository, `manifests/longhorn-backups/` | `main` | longhorn-system |
 | `apps/longhorn.yaml` | longhorn | Helm `https://charts.longhorn.io`, chart `longhorn` | 1.13.0 | longhorn-system |
 
 Every Application uses the `default` project, automated sync with `prune` and `selfHeal`, and `CreateNamespace=true`.

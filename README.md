@@ -48,6 +48,8 @@ and image version-pinned, kept as code so a merge to `main` is a deploy and a re
 - [`manifests/`](manifests/): plain manifests the Applications point at.
 - [`scripts/check_manifests.py`](scripts/check_manifests.py): the policy check CI runs on every change.
 
+  - **longhorn-backups**: nightly backups of every Longhorn volume, keeping 14 ([docs/longhorn-backups.md](docs/longhorn-backups.md)).
+
 Planned: see the [roadmap](docs/roadmap.md).
 
 ## Getting started

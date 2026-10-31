@@ -1,0 +1,20 @@
+# Longhorn's recurring backups (manifests/longhorn-backups/). The backup target itself (an NFS share) is set on the
+# cluster by hand, because it holds an address (docs/longhorn-backups.md).
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: longhorn-backups
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/HoneyBearTech/homelab-kube.git
+    targetRevision: main
+    path: manifests/longhorn-backups
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: longhorn-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
