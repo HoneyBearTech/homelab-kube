@@ -21,9 +21,26 @@ spec:
             type: LoadBalancer
         dex:
           enabled: false
+        configs:
+          rbac:
+            # Single sign-on (docs/sso.md): users are matched by their email; anyone not in policy.csv gets nothing.
+            scopes: "[email]"
+            policy.default: ""
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
+  # Single sign-on is site-specific (the URL holds the domain, policy.csv an email), so it is set on the cluster by
+  # hand (docs/sso.md) and these fields are left alone.
+  ignoreDifferences:
+    - kind: ConfigMap
+      name: argocd-cm
+      jsonPointers:
+        - /data/url
+        - /data/oidc.config
+    - kind: ConfigMap
+      name: argocd-rbac-cm
+      jsonPointers:
+        - /data/policy.csv
   syncPolicy:
     automated:
       prune: false
@@ -32,3 +49,4 @@ spec:
       # Argo CD's CRDs are too large for client-side apply; server-side apply also leaves alone the fields the chart
       # doesn't set, such as the admin password in argocd-secret.
       - ServerSideApply=true
+      - RespectIgnoreDifferences=true
