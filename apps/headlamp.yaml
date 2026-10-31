@@ -1,7 +1,7 @@
 # Headlamp, the cluster's web UI (https://headlamp.dev), from its official Helm chart.
-# Reached on a LoadBalancer address from the cluster's address pool; login with a ServiceAccount token
-# (apps/headlamp-access.yaml, docs/quick-start.md). The pod's own ServiceAccount gets no cluster role: Headlamp
-# acts with the token the user logs in with.
+# Reached on a LoadBalancer address from the cluster's address pool; login with single sign-on (docs/sso.md) or a
+# ServiceAccount token (apps/headlamp-access.yaml, docs/quick-start.md). The pod's own ServiceAccount gets no cluster
+# role: Headlamp acts with the identity the user logs in with.
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -17,6 +17,17 @@ spec:
       valuesObject:
         clusterRoleBinding:
           create: false
+        # Single sign-on (docs/sso.md): the client, issuer, scopes and callback come from the Secret
+        # headlamp/headlamp-oidc, created by hand. callbackURL only switches the flag on; its value is the Secret's.
+        config:
+          oidc:
+            secret:
+              create: false
+            externalSecret:
+              enabled: true
+              name: headlamp-oidc
+              hasScopes: true
+            callbackURL: "$(OIDC_CALLBACK_URL)"
         service:
           type: LoadBalancer
           port: 80

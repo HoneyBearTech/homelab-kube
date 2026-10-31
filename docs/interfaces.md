@@ -21,6 +21,17 @@ Every Application uses the `default` project, automated sync with `prune` and `s
 | `clusterRoleBinding.create` | `false` | the pod's ServiceAccount gets no cluster role; Headlamp acts with the login token |
 | `service.type` / `service.port` | `LoadBalancer` / `80` | its own address from the cluster's pool |
 | `resources` | requests 50m CPU, 128 MiB; limit 512 MiB | small, predictable footprint |
+| `config.oidc.externalSecret` | `headlamp-oidc`, with scopes | single sign-on settings from a Secret made by hand ([sso.md](sso.md)) |
+| `config.oidc.callbackURL` | `$(OIDC_CALLBACK_URL)` | turns the callback flag on; the value comes from that Secret |
+
+## Argo CD values
+
+| Value | Setting | Why |
+| --- | --- | --- |
+| `server.service.type` | `LoadBalancer` | its own address from the cluster's pool |
+| `dex.enabled` | `false` | sign-on goes straight to the OIDC provider |
+| `configs.rbac.scopes` / `policy.default` | `[email]` / `""` | SSO users are matched by email; anyone unlisted gets nothing |
+| `ignoreDifferences` | `argocd-cm` `url`, `oidc.config`; `argocd-rbac-cm` `policy.csv` | set by hand ([sso.md](sso.md)); not reverted |
 
 ## Longhorn values
 
