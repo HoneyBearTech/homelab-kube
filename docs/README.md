@@ -7,6 +7,7 @@ Start with the [README](../README.md) for what homelab-kube is and how to run it
 | [Quick start](quick-start.md) | From a running k3s cluster to Argo CD and Headlamp |
 | [Installing](installing.md) | What the cluster needs first, Argo CD, the root Application, running it securely, uninstalling |
 | [Argus agent](argus-agent.md) | Metrics and logs of every node to Argus: the Secret to create first, what the agent may do |
+| [Longhorn backups](longhorn-backups.md) | Nightly backups of every volume to an NFS share: the target, checking, restoring |
 | [Media trial](media-trial.md) | Sonarr and Radarr on copied configs: the guards, copying a config in, the checklist |
 | [Upgrading](upgrading.md) | Bumping a chart, upgrading Argo CD and k3s, and rolling back |
 | [Architecture](architecture.md) | The cluster, the Applications, and how a change reaches the cluster |

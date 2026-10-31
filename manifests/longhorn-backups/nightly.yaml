@@ -1,0 +1,17 @@
+# Every volume in Longhorn's "default" group (all volumes that don't name other recurring jobs) is backed up to the
+# backup target nightly, keeping the last 14. Backups are incremental: only changed blocks are sent.
+# Longhorn evaluates the schedule in UTC: 10:30 UTC is 04:30 US Central standard time (05:30 in summer time).
+apiVersion: longhorn.io/v1beta2
+kind: RecurringJob
+metadata:
+  name: backup-nightly
+  namespace: longhorn-system
+spec:
+  task: backup
+  cron: "30 10 * * *"
+  retain: 14
+  concurrency: 1
+  groups:
+    - default
+  labels:
+    homelab-kube/job: backup-nightly

@@ -20,7 +20,7 @@ What's planned for about the next year, and what homelab-kube will not do. Dates
 - [x] Argo CD managing its own Helm release from this repository
 - [x] Renovate, to propose Helm chart and image bumps (pull requests only)
 - Single sign-on for Argo CD and Headlamp
-- Backups of Longhorn volumes off the cluster
+- [x] Backups of Longhorn volumes off the cluster (nightly, keep 14)
 
 ## Security and project health
 

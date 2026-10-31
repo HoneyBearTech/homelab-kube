@@ -6,6 +6,11 @@ All notable changes to homelab-kube are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- Nightly Longhorn backups (`apps/longhorn-backups.yaml`): every volume at 10:30 UTC, keeping 14, to a backup
+  target set on the cluster by hand ([docs/longhorn-backups.md](docs/longhorn-backups.md)).
+
 ## [0.1.0] - 2026-10-30
 
 The first release: a small k3s cluster driven from this repository by Argo CD.
