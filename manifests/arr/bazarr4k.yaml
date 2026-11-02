@@ -8,7 +8,7 @@ metadata:
   name: bazarr4k-config
   namespace: arr
   annotations:
-    argocd.argoproj.io/sync-options: Delete=false
+    argocd.argoproj.io/sync-options: Delete=false,Prune=false
 spec:
   accessModes: [ReadWriteOnce]
   storageClassName: longhorn

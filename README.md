@@ -22,7 +22,7 @@ and image version-pinned, kept as code so a merge to `main` is a deploy and a re
 - [Installing](docs/installing.md): what the cluster needs first, installing Argo CD, the root Application,
   running it securely, uninstalling
 - [Upgrading](docs/upgrading.md): bumping a chart, upgrading Argo CD and k3s, rolling back
-- [Media trial](docs/media-trial.md): Sonarr and Radarr on copied configs, what keeps them harmless, copying a config in
+- [The *arr apps](docs/arr.md): shadows beside the Compose stack, then moved live one at a time
 - [Architecture](docs/architecture.md): the cluster, the Applications, and how a change reaches the cluster
 - [Interfaces](docs/interfaces.md): every Application, setting, annotation and command
 - [Verifying releases](docs/verifying-releases.md): checking signatures, checksums, provenance and the SBOM
@@ -45,7 +45,6 @@ and image version-pinned, kept as code so a merge to `main` is a deploy and a re
     default StorageClass `longhorn` (two replicas, volumes kept when a claim is deleted).
   - **arr**: the *arr apps beside a Compose stack, as read-only shadows first, then moved live one at a time
     ([docs/arr.md](docs/arr.md)).
-  - **media-trial**: stopped; only its claims remain ([docs/media-trial.md](docs/media-trial.md)).
 - [`manifests/`](manifests/): plain manifests the Applications point at.
 - [`scripts/check_manifests.py`](scripts/check_manifests.py): the policy check CI runs on every change.
 

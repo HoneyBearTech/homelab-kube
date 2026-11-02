@@ -11,11 +11,14 @@ cluster (addresses, names, sizes) are kept by its owner, never in this repositor
 
 ```
 bootstrap/root.yaml ──► Application "root" ──► apps/*.yaml
+                                                 ├─ argocd           Helm chart (argo/argo-cd)
                                                  ├─ argus-agent      manifests/argus-agent/
+                                                 ├─ arr              manifests/arr/
                                                  ├─ headlamp         Helm chart (kubernetes-sigs/headlamp)
                                                  ├─ headlamp-access  manifests/headlamp-access/
                                                  ├─ longhorn         Helm chart (longhorn/longhorn)
-                                                 └─ media-trial      manifests/media-trial/
+                                                 ├─ longhorn-backups manifests/longhorn-backups/
+                                                 └─ sealed-secrets   Helm chart (bitnami/sealed-secrets)
 ```
 
 | Application | Namespace | What | Reached at |
@@ -25,7 +28,6 @@ bootstrap/root.yaml ──► Application "root" ──► apps/*.yaml
 | headlamp | headlamp | the web UI | LoadBalancer address, port 80 |
 | headlamp-access | headlamp | the `headlamp-admin` login account | — |
 | arr | arr | the *arr apps: shadows, then live one at a time ([arr.md](arr.md)) | Traefik: `/<app>-k8s` |
-| media-trial | media-trial | stopped 2026-11-02; only its claims remain ([media-trial.md](media-trial.md)) | — |
 | longhorn | longhorn-system | replicated block storage, StorageClass `longhorn` (default) | UI: ClusterIP only |
 
 Argo CD itself was installed by Helm once and now manages its own release (`apps/argocd.yaml`; [installing.md](installing.md#argo-cd)).
