@@ -1,5 +1,9 @@
 # The media trial
 
+**Stopped 2026-11-02.** Its apps were removed when the *arr shadows started in `arr` ([arr.md](arr.md)), which
+use the same paths. What remains: the Application, its namespace and its claims (`media`, `sonarr-config`,
+`radarr-config`, kept by `Delete=false`), until the trial is removed. The steps below are kept for reference.
+
 Sonarr and Radarr run on the cluster beside the Compose stack that stays live, with copies of its configs, to see
 how the apps behave on Kubernetes: storage, restarts, a node going away. The trial must never grab, download,
 import or notify anything, and never write to the library.

@@ -24,7 +24,8 @@ bootstrap/root.yaml ──► Application "root" ──► apps/*.yaml
 | argus-agent | argus | the Argus agent on every node: metrics and logs to Argus ([argus-agent.md](argus-agent.md)) | — |
 | headlamp | headlamp | the web UI | LoadBalancer address, port 80 |
 | headlamp-access | headlamp | the `headlamp-admin` login account | — |
-| media-trial | media-trial | Sonarr and Radarr on copied configs, read-only media ([media-trial.md](media-trial.md)) | Traefik: `/sonarr-k8s`, `/radarr-k8s` |
+| arr | arr | the *arr apps: shadows, then live one at a time ([arr.md](arr.md)) | Traefik: `/<app>-k8s` |
+| media-trial | media-trial | stopped 2026-11-02; only its claims remain ([media-trial.md](media-trial.md)) | — |
 | longhorn | longhorn-system | replicated block storage, StorageClass `longhorn` (default) | UI: ClusterIP only |
 
 Argo CD itself was installed by Helm once and now manages its own release (`apps/argocd.yaml`; [installing.md](installing.md#argo-cd)).
