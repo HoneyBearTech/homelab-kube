@@ -33,7 +33,8 @@ by hand, each with `persistentVolumeReclaimPolicy: Retain`, `storageClassName: "
 
 ## Network
 
-`network-policy.yaml` allows DNS and the internet and refuses every private range. Policies applied by hand add
+`network-policy.yaml` allows DNS, the other apps in `arr` (Bazarr calls Sonarr and Radarr) and the internet, and
+refuses every other private address. Policies applied by hand add
 the addresses, selected by the mode label:
 
 - every pod in `arr`: the database server's PostgreSQL port
