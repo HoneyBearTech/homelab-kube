@@ -19,6 +19,8 @@ All notable changes to homelab-kube are documented here. The format follows
 
 ### Changed
 
+- The media trial is stopped: its Sonarr and Radarr, their Services, Ingresses and network policy are removed,
+  since the *arr shadows in `arr` serve the same paths. Its claims stay.
 - The Argus agent's Secret and Headlamp's single sign-on Secret are committed sealed
   (`manifests/argus-agent/argus-agent.sealed.yaml`, `manifests/headlamp-access/headlamp-oidc.sealed.yaml`) instead
   of being created by hand.
