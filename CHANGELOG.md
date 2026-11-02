@@ -18,6 +18,8 @@ All notable changes to homelab-kube are documented here. The format follows
 - The Argus agent's Secret and Headlamp's single sign-on Secret are committed sealed
   (`manifests/argus-agent/argus-agent.sealed.yaml`, `manifests/headlamp-access/headlamp-oidc.sealed.yaml`) instead
   of being created by hand.
+- Renovate may open pull requests at any time on Mondays (was before 06:00 UTC): its hosted runs could miss the
+  six-hour window and hold updates for another week.
 
 ## [0.2.0] - 2026-11-02
 

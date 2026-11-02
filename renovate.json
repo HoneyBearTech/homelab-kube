@@ -12,7 +12,7 @@
   "automerge": false,
   "assignees": ["HoneyBearTech"],
   "labels": ["dependencies"],
-  "schedule": ["before 6am on monday"],
+  "schedule": ["on monday"],
   "prConcurrentLimit": 5,
   "commitBodyTable": true,
   "packageRules": [
