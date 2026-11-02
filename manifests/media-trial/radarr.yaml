@@ -42,7 +42,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: radarr
-          image: lscr.io/linuxserver/radarr:version-6.4.4.10685@sha256:cfbc4fa09dc9d78f7cedc898f4ec48c6277cacedc523c4e159db6ff1c741959c
+          image: lscr.io/linuxserver/radarr:version-6.4.4.10685@sha256:ade5937813c6ae415b29db729386e53fea3ecf067a019849bafbe2d2a6ec02ba
           env:
             - {name: PUID, value: "1000"}
             - {name: PGID, value: "1000"}
