@@ -6,6 +6,8 @@ All notable changes to homelab-kube are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-11-02
+
 ### Added
 
 - Nightly Longhorn backups (`apps/longhorn-backups.yaml`): every volume at 10:30 UTC, keeping 14, to a backup
@@ -51,5 +53,6 @@ The first release: a small k3s cluster driven from this repository by Argo CD.
   AVX2: the kernel logs a general protection fault in `abort()` of the C library. 7.0.0-38 is not affected. Run the
   agents that host .NET apps on an unaffected kernel until a fixed one is released.
 
-[Unreleased]: https://github.com/HoneyBearTech/homelab-kube/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/HoneyBearTech/homelab-kube/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/HoneyBearTech/homelab-kube/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/HoneyBearTech/homelab-kube/releases/tag/v0.1.0
