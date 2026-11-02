@@ -13,6 +13,12 @@ All notable changes to homelab-kube are documented here. The format follows
   ([docs/sealed-secrets.md](docs/sealed-secrets.md)). The cluster's public sealing certificate is
   `sealed-secrets.pem`.
 
+### Changed
+
+- The Argus agent's Secret and Headlamp's single sign-on Secret are committed sealed
+  (`manifests/argus-agent/argus-agent.sealed.yaml`, `manifests/headlamp-access/headlamp-oidc.sealed.yaml`) instead
+  of being created by hand.
+
 ## [0.2.0] - 2026-11-02
 
 ### Added

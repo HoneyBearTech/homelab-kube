@@ -22,7 +22,7 @@ Every Application uses the `default` project, automated sync with `prune` and `s
 | `clusterRoleBinding.create` | `false` | the pod's ServiceAccount gets no cluster role; Headlamp acts with the login token |
 | `service.type` / `service.port` | `LoadBalancer` / `80` | its own address from the cluster's pool |
 | `resources` | requests 50m CPU, 128 MiB; limit 512 MiB | small, predictable footprint |
-| `config.oidc.externalSecret` | `headlamp-oidc`, with scopes | single sign-on settings from a Secret made by hand ([sso.md](sso.md)) |
+| `config.oidc.externalSecret` | `headlamp-oidc`, with scopes | single sign-on settings from a sealed Secret ([sso.md](sso.md)) |
 | `config.oidc.callbackURL` | `$(OIDC_CALLBACK_URL)` | turns the callback flag on; the value comes from that Secret |
 
 ## Argo CD values
