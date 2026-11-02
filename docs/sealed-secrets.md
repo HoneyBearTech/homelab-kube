@@ -35,6 +35,9 @@ kubeseal --cert sealed-secrets.pem --format yaml < secret.yaml > manifests/<app>
 rm secret.yaml
 ```
 
+CI's secret scan (gitleaks) skips only lines shaped like kubeseal's output (`.gitleaks.toml`); a plain value is
+still reported.
+
 A SealedSecret only works under the name and namespace it was sealed for. To change one value, seal again with
 `kubeseal --merge-into`.
 
