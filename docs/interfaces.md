@@ -10,6 +10,7 @@
 | `apps/argocd.yaml` | argocd | Helm `https://argoproj.github.io/argo-helm`, chart `argo-cd` (release `argocd`) | 10.11.6 | argocd |
 | `apps/media-trial.yaml` | media-trial | this repository, `manifests/media-trial/` | `main` | media-trial |
 | `apps/longhorn-backups.yaml` | longhorn-backups | this repository, `manifests/longhorn-backups/` | `main` | longhorn-system |
+| `apps/sealed-secrets.yaml` | sealed-secrets | Helm `https://bitnami.github.io/sealed-secrets`, chart `sealed-secrets` (release `sealed-secrets-controller`) | 2.22.0 | kube-system |
 | `apps/longhorn.yaml` | longhorn | Helm `https://charts.longhorn.io`, chart `longhorn` | 1.13.0 | longhorn-system |
 
 Every Application uses the `default` project, automated sync with `prune` and `selfHeal`, and `CreateNamespace=true`.
@@ -32,6 +33,14 @@ Every Application uses the `default` project, automated sync with `prune` and `s
 | `dex.enabled` | `false` | sign-on goes straight to the OIDC provider |
 | `configs.rbac.scopes` / `policy.default` | `[email]` / `""` | SSO users are matched by email; anyone unlisted gets nothing |
 | `ignoreDifferences` | `argocd-cm` `url`, `oidc.config`; `argocd-rbac-cm` `policy.csv` | set by hand ([sso.md](sso.md)); not reverted |
+
+## Sealed Secrets values
+
+| Value | Setting | Why |
+| --- | --- | --- |
+| `fullnameOverride` / namespace | `sealed-secrets-controller` / `kube-system` | `kubeseal`'s defaults: no flags needed |
+| `keyrenewperiod` | `"0"` | one key, never renewed: one backup restores every SealedSecret ([sealed-secrets.md](sealed-secrets.md)) |
+| `resources` | requests 10m CPU, 32 MiB; limit 128 MiB | small, predictable footprint |
 
 ## Longhorn values
 

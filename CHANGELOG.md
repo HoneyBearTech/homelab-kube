@@ -6,6 +6,12 @@ All notable changes to homelab-kube are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- Sealed Secrets (`apps/sealed-secrets.yaml`, chart 2.22.0): Secrets can be committed encrypted as SealedSecret
+  objects that only this cluster's controller decrypts; one sealing key, never renewed, backed up by hand
+  ([docs/sealed-secrets.md](docs/sealed-secrets.md)).
+
 ## [0.2.0] - 2026-11-02
 
 ### Added

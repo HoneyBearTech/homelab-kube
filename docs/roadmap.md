@@ -13,7 +13,7 @@ What's planned for about the next year, and what homelab-kube will not do. Dates
 - [x] Longhorn on the agents (replicated block storage) as the default StorageClass
 - [x] A media volume over NFS, read-only for trial apps (applied by hand: it holds an address)
 - [ ] A trial of media-management apps with copied settings and no downloads, to compare with the Compose stacks
-- Encrypted secrets in git (Sealed Secrets or SOPS), so apps that need a secret can be declared here
+- [x] Encrypted secrets in git (Sealed Secrets), so apps that need a secret can be declared here
 
 ## Later
 

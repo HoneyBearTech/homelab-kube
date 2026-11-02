@@ -46,4 +46,5 @@ What homelab-kube protects, what it doesn't, and where secrets live. The reasoni
 | Admin kubeconfig | the owner's machine (0600) and the servers | in git |
 | Argo CD `admin` password | Argo CD (bcrypt) and the owner's password manager | in git |
 | Headlamp tokens | made on demand, short-lived | stored anywhere |
+| Sealed Secrets private key | the cluster (`kube-system`) and the owner's password manager | in git |
 | Read-only monitoring token | its own kubeconfig (0600) | in git |
