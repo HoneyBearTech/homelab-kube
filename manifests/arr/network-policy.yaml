@@ -1,8 +1,9 @@
 # Every app may resolve names in the cluster, reach the other apps in this namespace (Bazarr calls Sonarr and
-# Radarr) and the internet (metadata providers), but nothing else on a private network. What each app may reach on the home network is added by policies the owner applies by hand, selected by
-# the pod's homelab-kube/mode label, since they hold addresses (docs/arr.md#network): a shadow gets its database
-# server only; a live app also gets the download clients, the indexer proxy and the media servers. The media
-# volume is mounted by the node, not the pod, so it isn't affected.
+# Radarr) and the internet (metadata providers), but nothing else on a private network. What each app may reach on
+# the home network is added by policies the owner applies by hand, selected by the pod's homelab-kube/mode label,
+# since they hold addresses (docs/arr.md#network): a shadow gets its database server only; a live app also gets the
+# download clients, the indexer proxy and the media servers. The media volume is mounted by the node, not the pod,
+# so it isn't affected.
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
