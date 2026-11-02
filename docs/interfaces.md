@@ -8,6 +8,7 @@
 | `apps/headlamp.yaml` | headlamp | Helm `https://kubernetes-sigs.github.io/headlamp/`, chart `headlamp` | 0.46.0 | headlamp |
 | `apps/headlamp-access.yaml` | headlamp-access | this repository, `manifests/headlamp-access/` | `main` | headlamp |
 | `apps/argocd.yaml` | argocd | Helm `https://argoproj.github.io/argo-helm`, chart `argo-cd` (release `argocd`) | 10.11.6 | argocd |
+| `apps/arr.yaml` | arr | this repository, `manifests/arr/` | `main` | arr |
 | `apps/media-trial.yaml` | media-trial | this repository, `manifests/media-trial/` | `main` | media-trial |
 | `apps/longhorn-backups.yaml` | longhorn-backups | this repository, `manifests/longhorn-backups/` | `main` | longhorn-system |
 | `apps/sealed-secrets.yaml` | sealed-secrets | Helm `https://bitnami.github.io/sealed-secrets`, chart `sealed-secrets` (release `sealed-secrets-controller`) | 2.22.0 | kube-system |
@@ -69,6 +70,12 @@ The Application syncs with `ServerSideApply=true` (Longhorn's CRDs are too large
 | NetworkPolicy `trial-egress` | DNS in the cluster and the internet only; no private networks |
 | ServiceAccount `headlamp/headlamp-admin` | Headlamp login; no token is mounted or stored |
 | ClusterRoleBinding `headlamp-admin` → `cluster-admin` | what that login may do |
+
+## Labels
+
+| Label | On | Values |
+| --- | --- | --- |
+| `homelab-kube/mode` | the pods in `arr` | `shadow` or `live`; selects the network policies applied by hand ([arr.md](arr.md#modes)) |
 
 ## Policy annotations
 

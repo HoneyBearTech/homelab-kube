@@ -10,6 +10,7 @@ Start with the [README](../README.md) for what homelab-kube is and how to run it
 | [Longhorn backups](longhorn-backups.md) | Nightly backups of every volume to an NFS share: the target, checking, restoring |
 | [Sealed Secrets](sealed-secrets.md) | Committing Secrets encrypted: backing up the key, sealing, restoring |
 | [Single sign-on](sso.md) | Signing in to Argo CD and Headlamp with an OIDC provider: what to set by hand, checking |
+| [The *arr apps](arr.md) | Running the *arr apps beside the Compose host, then moving them over one at a time |
 | [Media trial](media-trial.md) | Sonarr and Radarr on copied configs: the guards, copying a config in, the checklist |
 | [Upgrading](upgrading.md) | Bumping a chart, upgrading Argo CD and k3s, and rolling back |
 | [Architecture](architecture.md) | The cluster, the Applications, and how a change reaches the cluster |

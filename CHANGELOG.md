@@ -8,6 +8,10 @@ All notable changes to homelab-kube are documented here. The format follows
 
 ### Added
 
+- The *arr apps (`apps/arr.yaml`, `manifests/arr/`): Radarr, Radarr 4K, Sonarr, Sonarr 4K, Lidarr, Bazarr and
+  Bazarr 4K at 0 replicas, as read-only shadows beside the Compose host first, then moved live one at a time
+  ([docs/arr.md](docs/arr.md)).
+
 - Sealed Secrets (`apps/sealed-secrets.yaml`, chart 2.22.0): Secrets can be committed encrypted as SealedSecret
   objects that only this cluster's controller decrypts; one sealing key, never renewed, backed up by hand
   ([docs/sealed-secrets.md](docs/sealed-secrets.md)). The cluster's public sealing certificate is
