@@ -1,0 +1,106 @@
+# Lidarr: the same image as on the Compose host. Only config.xml is on Longhorn; its databases are on the
+# PostgreSQL server (copies while a shadow, the production ones once live). The media is at /media, as there. Served
+# by Traefik under /lidarr-k8s. 0 replicas until its config is loaded (docs/arr.md).
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: lidarr-config
+  namespace: arr
+  annotations:
+    argocd.argoproj.io/sync-options: Delete=false
+spec:
+  accessModes: [ReadWriteOnce]
+  storageClassName: longhorn
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lidarr
+  namespace: arr
+  labels:
+    app.kubernetes.io/name: lidarr
+spec:
+  # Never more than 1: the config volume is ReadWriteOnce, and two instances must never share one database.
+  replicas: 0
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: lidarr
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: lidarr
+        # shadow: read-only, on a copy of its databases; live: the Compose host's copy is stopped (docs/arr.md#modes).
+        homelab-kube/mode: shadow
+    spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: lidarr
+          image: lscr.io/linuxserver/lidarr:version-3.1.0.4875@sha256:67887807b13ae025c0fe979da298347c8609969087ab064c81d8e9acc1e06bbf
+          env:
+            - {name: PUID, value: "1000"}
+            - {name: PGID, value: "1000"}
+            - {name: TZ, value: Etc/UTC}
+            - {name: UMASK, value: "002"}
+            - {name: LIDARR__SERVER__URLBASE, value: /lidarr-k8s}
+          ports:
+            - {name: http, containerPort: 8686}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
+              add: [CHOWN, DAC_OVERRIDE, SETUID, SETGID, KILL]
+          volumeMounts:
+            - {name: config, mountPath: /config}
+            - {name: media, mountPath: /media, readOnly: true}
+          # TCP, not HTTP: a copied config's Allowed Hosts answers 400 to the kubelet's Host header.
+          startupProbe:
+            tcpSocket: {port: http}
+            periodSeconds: 10
+            failureThreshold: 60
+          livenessProbe:
+            tcpSocket: {port: http}
+            periodSeconds: 60
+            timeoutSeconds: 10
+          resources:
+            requests: {cpu: 100m, memory: 256Mi}
+            limits: {memory: 1Gi}
+      volumes:
+        - name: config
+          persistentVolumeClaim: {claimName: lidarr-config}
+        - name: media
+          persistentVolumeClaim: {claimName: media-ro, readOnly: true}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: lidarr
+  namespace: arr
+spec:
+  selector:
+    app.kubernetes.io/name: lidarr
+  ports:
+    - {name: http, port: 8686, targetPort: http}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: lidarr
+  namespace: arr
+spec:
+  ingressClassName: traefik
+  rules:
+    - http:
+        paths:
+          - path: /lidarr-k8s
+            pathType: Prefix
+            backend:
+              service:
+                name: lidarr
+                port: {name: http}

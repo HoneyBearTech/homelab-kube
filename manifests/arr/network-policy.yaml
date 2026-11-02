@@ -1,0 +1,33 @@
+# Every app may resolve names in the cluster and reach the internet (metadata providers), but nothing on a private
+# network. What each app may reach on the home network is added by policies the owner applies by hand, selected by
+# the pod's homelab-kube/mode label, since they hold addresses (docs/arr.md#network): a shadow gets its database
+# server only; a live app also gets the download clients, the indexer proxy and the media servers. The media
+# volume is mounted by the node, not the pod, so it isn't affected.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: arr-egress
+  namespace: arr
+spec:
+  podSelector: {}
+  policyTypes: [Egress]
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      ports:
+        - {protocol: UDP, port: 53}
+        - {protocol: TCP, port: 53}
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+            except:
+              - 10.0.0.0/8
+              - 172.16.0.0/12
+              - 192.168.0.0/16
+              - 100.64.0.0/10
+              - 169.254.0.0/16

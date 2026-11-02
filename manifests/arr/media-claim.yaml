@@ -1,0 +1,18 @@
+# The media library, read-only, for every shadow app. It binds to the PersistentVolume "arr-media-ro", which the
+# cluster's owner applies by hand: it holds the NFS server's address, which this public repository never does
+# (docs/arr.md#the-media-volumes). A live app's read-write claim is added with its move.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: media-ro
+  namespace: arr
+  annotations:
+    # Never deleted by a sync, even if this file is removed.
+    argocd.argoproj.io/sync-options: Delete=false
+spec:
+  accessModes: [ReadOnlyMany]
+  storageClassName: ""
+  volumeName: arr-media-ro
+  resources:
+    requests:
+      storage: 1Ti
