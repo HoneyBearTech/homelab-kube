@@ -24,7 +24,7 @@ metadata:
     app.kubernetes.io/name: radarr4k
 spec:
   # Never more than 1: the config volume is ReadWriteOnce, and two instances must never share one database.
-  replicas: 0
+  replicas: 1
   strategy:
     type: Recreate
   selector:
