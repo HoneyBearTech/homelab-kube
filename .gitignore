@@ -8,6 +8,8 @@ kubeconfig*
 *.crt
 *.p12
 *.pfx
+# except the Sealed Secrets public certificate, which can only encrypt (docs/sealed-secrets.md)
+!/sealed-secrets.pem
 id_rsa*
 id_ed25519*
 
