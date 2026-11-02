@@ -6,21 +6,13 @@ Docker hosts with one agent container each. On this cluster the same image runs 
 Host Health, Docker Containers and Logs dashboards under its node name. What it collects and why it needs each
 permission is in Argus' [docs/kubernetes.md](https://github.com/HoneyBearTech/Argus/blob/main/docs/kubernetes.md).
 
-## Before the first sync: the Secret
+## The Secret
 
-The Argus server's addresses and the push password aren't in this public repository. Create the Secret once, with
-the admin kubeconfig, using the same values as a Docker host's agent `.env`:
-
-```sh
-kubectl create namespace argus
-kubectl -n argus create secret generic argus-agent \
-  --from-literal=ARGUS_PROMETHEUS_URL=http://<argus-server>:9090 \
-  --from-literal=ARGUS_LOKI_URL=http://<loki-host>:3101 \
-  --from-file=ARGUS_PROMETHEUS_PASSWORD=/dev/stdin   # type or paste it, Enter, Ctrl-D
-```
-
-Without it the pods wait in `CreateContainerConfigError`. To change a value, recreate the Secret and restart the
-pods: `kubectl -n argus rollout restart daemonset argus-agent`.
+The Argus server's addresses and the push password are committed encrypted, as the SealedSecret
+`manifests/argus-agent/argus-agent.sealed.yaml` ([sealed-secrets.md](sealed-secrets.md)); the controller turns it into
+the Secret `argus/argus-agent` the pods read. To change a value, seal it again with the same three keys
+(`ARGUS_PROMETHEUS_URL`, `ARGUS_LOKI_URL`, `ARGUS_PROMETHEUS_PASSWORD`), merge, and restart the pods:
+`kubectl -n argus rollout restart daemonset argus-agent`.
 
 ## What it may do
 

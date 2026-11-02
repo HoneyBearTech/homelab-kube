@@ -9,9 +9,10 @@ Kubernetes RBAC decides what they may do. Token logins and Argo CD's `admin` kee
 - `apps/argocd.yaml`: RBAC matches users by their `email` claim, and anyone not listed in `policy.csv` gets no
   access (`policy.default: ""`). The SSO fields set by hand (below) are listed in `ignoreDifferences`, so Argo CD
   neither reports them as drift nor reverts them.
-- `apps/headlamp.yaml`: Headlamp reads its OIDC settings from the Secret `headlamp/headlamp-oidc`.
+- `apps/headlamp.yaml`: Headlamp reads its OIDC settings from the Secret `headlamp/headlamp-oidc`, committed
+  sealed in `manifests/headlamp-access/`.
 
-Nothing here holds a client ID, client secret, domain or email.
+Nothing here holds a client ID, client secret, domain or email in the clear.
 
 ## What the cluster provides (set by hand)
 
@@ -38,13 +39,16 @@ Then, in this order:
    kubectl create clusterrolebinding sso-<name> --clusterrole=cluster-admin --user=<email>
    ```
 
-3. **Headlamp's Secret**, before Headlamp's pod restarts with these values (it won't start without it):
+3. **Headlamp's Secret** is committed encrypted, as the SealedSecret
+   `manifests/headlamp-access/headlamp-oidc.sealed.yaml` ([sealed-secrets.md](sealed-secrets.md)). For another
+   provider or client, seal a new one with the same keys:
 
    ```sh
-   kubectl -n headlamp create secret generic headlamp-oidc \
+   kubectl -n headlamp create secret generic headlamp-oidc --dry-run=client -o yaml \
      --from-literal=OIDC_CLIENT_ID=<client-id> --from-literal=OIDC_CLIENT_SECRET=<client-secret> \
      --from-literal=OIDC_ISSUER_URL=https://accounts.google.com --from-literal=OIDC_SCOPES=openid,email,profile \
-     --from-literal=OIDC_CALLBACK_URL=https://<headlamp-host>/oidc-callback
+     --from-literal=OIDC_CALLBACK_URL=https://<headlamp-host>/oidc-callback \
+     | kubeseal --cert sealed-secrets.pem --format yaml > manifests/headlamp-access/headlamp-oidc.sealed.yaml
    ```
 
 4. **Argo CD**, after these values have synced:

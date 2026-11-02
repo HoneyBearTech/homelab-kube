@@ -18,7 +18,8 @@ spec:
         clusterRoleBinding:
           create: false
         # Single sign-on (docs/sso.md): the client, issuer, scopes and callback come from the Secret
-        # headlamp/headlamp-oidc, created by hand. callbackURL only switches the flag on; its value is the Secret's.
+        # headlamp/headlamp-oidc, sealed in manifests/headlamp-access/. callbackURL only switches the flag on; its
+        # value is the Secret's.
         config:
           oidc:
             secret:

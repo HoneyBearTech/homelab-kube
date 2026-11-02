@@ -1,5 +1,6 @@
 # The account the owner logs in to Headlamp with (manifests/headlamp-access/). Its tokens are short-lived and
-# made on demand with `kubectl create token`; none is stored in the cluster or in this repository.
+# made on demand with `kubectl create token`; none is stored in the cluster or in this repository. Also Headlamp's
+# single sign-on settings, sealed (headlamp-oidc.sealed.yaml, docs/sso.md).
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
