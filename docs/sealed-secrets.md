@@ -20,13 +20,9 @@ kubectl -n kube-system get secret -l sealedsecrets.bitnami.com/sealed-secrets-ke
 
 The key is never renewed (`keyrenewperiod: "0"`), so this one copy stays enough.
 
-The public certificate isn't secret. Get it the same way and commit it as `sealed-secrets.pem` at the top of the
-repository, so sealing needs no cluster access:
-
-```sh
-kubectl -n kube-system get secret -l sealedsecrets.bitnami.com/sealed-secrets-key \
-  -o jsonpath='{.items[0].data.tls\.crt}' | base64 -d > sealed-secrets.pem
-```
+The public certificate isn't secret: it's committed as [`sealed-secrets.pem`](../sealed-secrets.pem) at the top of
+the repository (valid until 2036-10-30), so sealing needs no cluster access. The controller prints it in its log on
+start; after a new key, replace the file with it.
 
 ## Sealing a Secret
 
@@ -54,5 +50,5 @@ SealedSecret.
 ## Rotating the key
 
 Only when the key may have leaked: delete the key Secret and restart the controller, which makes a new one; then
-re-seal every SealedSecret, commit the new certificate and back the new key up. Values sealed with a leaked key
+commit the new certificate, re-seal every SealedSecret and back the new key up. Values sealed with a leaked key
 must be changed at their source as well, since old commits keep the old ciphertext.
