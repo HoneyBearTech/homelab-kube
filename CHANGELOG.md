@@ -17,8 +17,13 @@ All notable changes to homelab-kube are documented here. The format follows
   ([docs/sealed-secrets.md](docs/sealed-secrets.md)). The cluster's public sealing certificate is
   `sealed-secrets.pem`.
 
+### Removed
+
+- The media trial's Application and manifests (`apps/media-trial.yaml`, `manifests/media-trial/`).
+
 ### Changed
 
+- The *arr claims are also `Prune=false`, so removing their files from git can't prune them.
 - The media trial is stopped: its Sonarr and Radarr, their Services, Ingresses and network policy are removed,
   since the *arr shadows in `arr` serve the same paths. Its claims stay.
 - The Argus agent's Secret and Headlamp's single sign-on Secret are committed sealed

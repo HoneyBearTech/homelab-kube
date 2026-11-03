@@ -9,7 +9,6 @@
 | `apps/headlamp-access.yaml` | headlamp-access | this repository, `manifests/headlamp-access/` | `main` | headlamp |
 | `apps/argocd.yaml` | argocd | Helm `https://argoproj.github.io/argo-helm`, chart `argo-cd` (release `argocd`) | 10.11.6 | argocd |
 | `apps/arr.yaml` | arr | this repository, `manifests/arr/` | `main` | arr |
-| `apps/media-trial.yaml` | media-trial | this repository, `manifests/media-trial/` | `main` | media-trial |
 | `apps/longhorn-backups.yaml` | longhorn-backups | this repository, `manifests/longhorn-backups/` | `main` | longhorn-system |
 | `apps/sealed-secrets.yaml` | sealed-secrets | Helm `https://bitnami.github.io/sealed-secrets`, chart `sealed-secrets` (release `sealed-secrets-controller`) | 2.22.0 | kube-system |
 | `apps/longhorn.yaml` | longhorn | Helm `https://charts.longhorn.io`, chart `longhorn` | 1.13.0 | longhorn-system |
@@ -63,8 +62,6 @@ The Application syncs with `ServerSideApply=true` (Longhorn's CRDs are too large
 
 | Object | Purpose |
 | --- | --- |
-| PVC `media-trial/media` (ReadOnlyMany, `volumeName: media-nfs`) | the media library, read-only, for every trial app |
-| PVC `media-trial/sonarr-config`, `radarr-config` (Longhorn, 10 GiB) | each app's `/config` |
 | Deployments `sonarr`, `radarr` (0 replicas until loaded) | the apps; URL base from `SONARR__SERVER__URLBASE` / `RADARR__SERVER__URLBASE` |
 | Ingress `sonarr`, `radarr` (class `traefik`, no host) | `/sonarr-k8s`, `/radarr-k8s` on Traefik's address |
 | NetworkPolicy `trial-egress` | DNS in the cluster and the internet only; no private networks |

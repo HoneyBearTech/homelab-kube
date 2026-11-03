@@ -7,8 +7,9 @@ metadata:
   name: media-ro
   namespace: arr
   annotations:
-    # Never deleted by a sync, even if this file is removed.
-    argocd.argoproj.io/sync-options: Delete=false
+    # Kept by Argo CD: never pruned (Prune=false), even if this file is removed, nor deleted with the Application
+    # (Delete=false).
+    argocd.argoproj.io/sync-options: Delete=false,Prune=false
 spec:
   accessModes: [ReadOnlyMany]
   storageClassName: ""

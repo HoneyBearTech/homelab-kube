@@ -1,8 +1,9 @@
 # The media trial
 
-**Stopped 2026-11-02.** Its apps were removed when the *arr shadows started in `arr` ([arr.md](arr.md)), which
-use the same paths. What remains: the Application, its namespace and its claims (`media`, `sonarr-config`,
-`radarr-config`, kept by `Delete=false`), until the trial is removed. The steps below are kept for reference.
+**Removed 2026-11-02.** The *arr shadows in `arr` ([arr.md](arr.md)) replaced it. Its two config volumes were
+pruned from git with their claims (`Delete=false` only guards against deleting the whole Application; `Prune=false`
+guards against pruning), but Longhorn's `Retain` kept them as Released PersistentVolumes. The steps below are kept
+for reference: `arr` loads configs the same way.
 
 Sonarr and Radarr run on the cluster beside the Compose stack that stays live, with copies of its configs, to see
 how the apps behave on Kubernetes: storage, restarts, a node going away. The trial must never grab, download,
