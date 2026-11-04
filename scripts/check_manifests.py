@@ -124,7 +124,8 @@ def check_document(doc: dict[str, Any]) -> Iterator[tuple[str, str]]:
     kind = doc.get("kind")
     if kind == "Secret":
         yield "no-secret", "Secret objects must not be committed"
-    if kind == "Application" and str(doc.get("apiVersion", "")).startswith("argoproj.io/"):
+    group = str(doc.get("apiVersion", "")).partition("/")[0]
+    if kind == "Application" and group == "argoproj.io":
         yield from check_application(doc)
     yield from check_workload(doc)
 
