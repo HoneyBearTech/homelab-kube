@@ -31,6 +31,8 @@ All notable changes to homelab-kube are documented here. The format follows
   of being created by hand.
 - Renovate may open pull requests at any time on Mondays (was before 06:00 UTC): its hosted runs could miss the
   six-hour window and hold updates for another week.
+- The manifest checker recognises an Argo CD Application by its exact API group (`argoproj.io`) instead of a
+  string prefix of `apiVersion` (CodeQL `py/incomplete-url-substring-sanitization`).
 
 ## [0.2.0] - 2026-11-02
 

@@ -84,6 +84,12 @@ def test_loose_chart_version_fails(tmp_path: Path, rev: str) -> None:
     assert "[pinned-chart]" in found[0]
 
 
+@pytest.mark.parametrize("api_version", ["example.com/v1", "argoproj.io.example.com/v1alpha1"])
+def test_only_argo_cd_applications_are_checked(tmp_path: Path, api_version: str) -> None:
+    other = app(CHART.format(rev="latest")).replace("argoproj.io/v1alpha1", api_version)
+    assert findings(tmp_path, {"apps/a.yaml": other}) == []
+
+
 def test_chart_waiver_needs_a_reason(tmp_path: Path) -> None:
     empty = '  annotations:\n    homelab-kube/allow-pinned-chart: ""'
     reason = '  annotations:\n    homelab-kube/allow-pinned-chart: "testing a release candidate"'
