@@ -11,7 +11,7 @@ spec:
   source:
     repoURL: https://argoproj.github.io/argo-helm
     chart: argo-cd
-    targetRevision: 10.11.6
+    targetRevision: 10.17.1
     helm:
       # The Helm release's name: the chart names every object after it (argocd-server, argocd-repo-server, ...).
       releaseName: argocd
