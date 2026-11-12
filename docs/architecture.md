@@ -47,4 +47,3 @@ commit (polling, about every three minutes) â†’ sync, pruning removed objects â†
 **Synced/Healthy**. A revert pull request rolls back the same way.
 
 ## Planned
-
