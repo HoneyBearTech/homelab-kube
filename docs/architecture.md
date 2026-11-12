@@ -38,7 +38,7 @@ Argo CD itself was installed by Helm once and now manages its own release (`apps
 - **Argo CD** reads this public repository over HTTPS (no credential) and applies it with its own cluster-admin
   ServiceAccount.
 - **Headlamp** proxies the user's requests to the API with the token the user logged in with.
-- **Dependabot and CI** propose and check changes; they never reach the cluster.
+- **Renovate and CI** propose and check changes; they never reach the cluster.
 
 ## How a change reaches the cluster
 
