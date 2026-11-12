@@ -2,6 +2,12 @@
 
 Start with the [README](../README.md) for what homelab-kube is and how to run it.
 
+For a new cluster, read [Installing](installing.md) for prerequisites and cluster-provided settings, then use
+[Quick start](quick-start.md) to install Argo CD and apply the root Application. Once running, use the
+[Architecture](architecture.md) guide to understand sync and health, [Upgrading](upgrading.md) for updates and
+rollback, and [Security requirements](security.md) for safe access. The focused [Longhorn backups](longhorn-backups.md)
+and [*arr apps](arr.md) guides cover restore and cutover procedures.
+
 | Document | For |
 | --- | --- |
 | [Quick start](quick-start.md) | From a running k3s cluster to Argo CD and Headlamp |
