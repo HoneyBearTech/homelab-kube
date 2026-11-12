@@ -34,20 +34,19 @@ To update the Python tools: `uv pip compile --generate-hashes --universal requir
 
 ## Tracking dependencies
 
-- **Dependabot** ([`.github/dependabot.yml`](../.github/dependabot.yml)) checks the Python tools and the Actions
-  weekly and opens a pull request for each update; patch, minor and major updates are squash-merged automatically
-  once every required check passes. Dependabot alerts and security updates are on.
-- **Renovate** ([`renovate.json`](../renovate.json), run by the Mend Renovate GitHub App) proposes Helm chart
-  bumps in `apps/` and image bumps (tag and digest) in `manifests/`, weekly, as pull requests, with a dependency
-  dashboard issue. **Nothing is merged automatically**: a merge deploys, so the maintainer reads the release notes
-  and merges by hand ([upgrading.md](upgrading.md#bumping-a-chart)). Dependabot can't read chart versions in Argo CD
-  Applications, so it keeps only the Python tools and the Actions.
+- **Renovate** ([`renovate.json`](../renovate.json), run by the Mend Renovate GitHub App) proposes updates for Argo CD
+  charts in `apps/` and `bootstrap/`, Kubernetes images in `manifests/`, Python requirements, and GitHub Actions.
+  It checks before 6am on Monday in America/Chicago, groups minor and patch updates, and keeps major updates separate.
+  Renovate opens pull requests and a dependency dashboard issue. **Nothing is merged automatically**: a merge deploys,
+  so the maintainer reads release notes and merges by hand ([upgrading.md](upgrading.md#bumping-a-chart)).
+- **Dependabot alerts** remain enabled for vulnerability findings and are triaged below. Disable Dependabot security
+  updates after migrating version updates to Renovate. Renovate also raises OSV vulnerability alerts labeled `security`.
 - **A merge deploys.** Argo CD syncs `main` automatically, so every merge reaches the maintainer's cluster within
   minutes.
 - **Dependency review** blocks a pull request that adds a Python or Actions dependency with a known vulnerability
   of moderate severity or higher, or a license outside the allowlist.
-- The CI-only tools pinned in `run:` steps (actionlint, gitleaks, kubeconform) aren't seen by Dependabot; they're
-  bumped by hand at least every quarter.
+- The CI-only tools pinned in `run:` steps (actionlint, gitleaks, kubeconform) aren't seen by dependency managers;
+  they're bumped by hand at least every quarter.
 - **Nothing in the cluster updates itself from a registry.** Argo CD applies only what is merged.
 
 ## Policy for vulnerabilities in dependencies

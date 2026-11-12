@@ -1,31 +1,84 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "description": "Helm charts in apps/ and images in manifests/. Pull requests only: a merge deploys, so every update waits for the maintainer (docs/dependencies.md). Dependabot keeps the Python tools and GitHub Actions.",
-  "extends": ["config:recommended", ":dependencyDashboard", ":semanticCommitsDisabled"],
-  "enabledManagers": ["argocd", "kubernetes"],
+  "description": "Helm charts, Kubernetes images, Python requirements, and GitHub Actions. Pull requests only: a merge deploys, so every update waits for the maintainer (docs/dependencies.md).",
+  "extends": [
+    "config:recommended",
+    ":dependencyDashboard",
+    ":semanticCommitsDisabled"
+  ],
+  "enabledManagers": [
+    "argocd",
+    "kubernetes",
+    "pip_requirements",
+    "github-actions"
+  ],
   "argocd": {
-    "managerFilePatterns": ["/^apps/.+\\.ya?ml$/", "/^bootstrap/.+\\.ya?ml$/"]
+    "managerFilePatterns": [
+      "/^apps/.+\\.ya?ml$/",
+      "/^bootstrap/.+\\.ya?ml$/"
+    ]
   },
   "kubernetes": {
-    "managerFilePatterns": ["/^manifests/.+\\.ya?ml$/"]
+    "managerFilePatterns": [
+      "/^manifests/.+\\.ya?ml$/"
+    ]
   },
   "automerge": false,
-  "assignees": ["HoneyBearTech"],
-  "labels": ["dependencies"],
-  "schedule": ["on monday"],
+  "assignees": [
+    "HoneyBearTech"
+  ],
+  "labels": [
+    "dependencies"
+  ],
+  "schedule": [
+    "before 6am on monday"
+  ],
   "prConcurrentLimit": 5,
   "commitBodyTable": true,
   "packageRules": [
     {
+      "description": "Group minor and patch updates together for maintainer review.",
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
+      "groupName": "minor and patch updates"
+    },
+    {
+      "description": "Keep major updates separate and clearly labeled.",
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "addLabels": [
+        "major"
+      ]
+    },
+    {
       "description": "linuxserver.io tags look like version-4.0.20.3014: compare the four numbers, keep the digest pinned.",
-      "matchDatasources": ["docker"],
-      "matchPackageNames": ["/^lscr\\.io\\/linuxserver\\//"],
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchPackageNames": [
+        "/^lscr\\.io\\/linuxserver\\//"
+      ],
       "versioning": "regex:^version-(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)\\.(?<build>\\d+)$"
     },
     {
       "description": "Longhorn and Argo CD can need upgrade steps (one Longhorn minor at a time; Argo CD's notes): their PRs say so.",
-      "matchPackageNames": ["longhorn", "argo-cd"],
-      "prBodyNotes": ["Read the upgrade notes before merging: a merge deploys this. Longhorn upgrades one minor version at a time."]
+      "matchPackageNames": [
+        "longhorn",
+        "argo-cd"
+      ],
+      "prBodyNotes": [
+        "Read the upgrade notes before merging: a merge deploys this. Longhorn upgrades one minor version at a time."
+      ]
     }
-  ]
+  ],
+  "timezone": "America/Chicago",
+  "osvVulnerabilityAlerts": true,
+  "vulnerabilityAlerts": {
+    "labels": [
+      "security"
+    ]
+  }
 }
