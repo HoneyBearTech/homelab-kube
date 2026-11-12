@@ -1,13 +1,19 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "description": "Helm charts in apps/ and images in manifests/. Pull requests only: a merge deploys, so every update waits for the maintainer (docs/dependencies.md). Dependabot keeps the Python tools and GitHub Actions.",
-  "extends": ["config:recommended", ":dependencyDashboard", ":semanticCommitsDisabled"],
-  "enabledManagers": ["argocd", "kubernetes"],
+  "description": "Helm charts in apps/, images in manifests/, Python tools, and GitHub Actions. Pull requests only: a merge deploys, so every update waits for the maintainer (docs/dependencies.md).",
+  "extends": ["config:recommended", ":dependencyDashboard", ":enableVulnerabilityAlerts", ":semanticCommitsDisabled"],
+  "enabledManagers": ["argocd", "kubernetes", "pip_requirements", "github-actions"],
   "argocd": {
     "managerFilePatterns": ["/^apps/.+\\.ya?ml$/", "/^bootstrap/.+\\.ya?ml$/"]
   },
   "kubernetes": {
     "managerFilePatterns": ["/^manifests/.+\\.ya?ml$/"]
+  },
+  "pip_requirements": {
+    "managerFilePatterns": ["/^requirements-dev\\.(txt|in)$/"]
+  },
+  "github-actions": {
+    "managerFilePatterns": ["/^\\.github/workflows/.+\\.ya?ml$/"]
   },
   "automerge": false,
   "assignees": ["HoneyBearTech"],
