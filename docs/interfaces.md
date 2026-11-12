@@ -7,7 +7,7 @@
 | `bootstrap/root.yaml` | root | this repository, `apps/` | `main` | argocd |
 | `apps/headlamp.yaml` | headlamp | Helm `https://kubernetes-sigs.github.io/headlamp/`, chart `headlamp` | 0.46.0 | headlamp |
 | `apps/headlamp-access.yaml` | headlamp-access | this repository, `manifests/headlamp-access/` | `main` | headlamp |
-| `apps/argocd.yaml` | argocd | Helm `https://argoproj.github.io/argo-helm`, chart `argo-cd` (release `argocd`) | 10.11.6 | argocd |
+| `apps/argocd.yaml` | argocd | Helm `https://argoproj.github.io/argo-helm`, chart `argo-cd` (release `argocd`) | 10.17.1 | argocd |
 | `apps/arr.yaml` | arr | this repository, `manifests/arr/` | `main` | arr |
 | `apps/longhorn-backups.yaml` | longhorn-backups | this repository, `manifests/longhorn-backups/` | `main` | longhorn-system |
 | `apps/sealed-secrets.yaml` | sealed-secrets | Helm `https://bitnami.github.io/sealed-secrets`, chart `sealed-secrets` (release `sealed-secrets-controller`) | 2.22.0 | kube-system |
@@ -62,11 +62,22 @@ The Application syncs with `ServerSideApply=true` (Longhorn's CRDs are too large
 
 | Object | Purpose |
 | --- | --- |
-| Deployments `sonarr`, `radarr` (0 replicas until loaded) | the apps; URL base from `SONARR__SERVER__URLBASE` / `RADARR__SERVER__URLBASE` |
-| Ingress `sonarr`, `radarr` (class `traefik`, no host) | `/sonarr-k8s`, `/radarr-k8s` on Traefik's address |
-| NetworkPolicy `trial-egress` | DNS in the cluster and the internet only; no private networks |
+| Deployments `sonarr`, `radarr`, `lidarr`, `bazarr`, `sonarr4k`, `radarr4k`, `bazarr4k` (0 replicas until loaded) | *arr apps; see [arr.md](arr.md) for configuration and cutover |
+| Ingresses for those apps (class `traefik`, no host) | `/sonarr-k8s`, `/radarr-k8s`, `/lidarr-k8s`, `/bazarr-k8s`, `/sonarr4k-k8s`, `/radarr4k-k8s`, `/bazarr4k-k8s` on Traefik |
+| NetworkPolicy `arr-egress` | egress controls for *arr workloads; see [arr.md](arr.md#modes) |
 | ServiceAccount `headlamp/headlamp-admin` | Headlamp login; no token is mounted or stored |
 | ClusterRoleBinding `headlamp-admin` → `cluster-admin` | what that login may do |
+
+## Environment variable names
+
+The Argus agent's DaemonSet uses `ARGUS_HOST` and `ARGUS_NODE_IP`; its Secret supplies
+`ARGUS_PROMETHEUS_URL`, `ARGUS_LOKI_URL`, and `ARGUS_PROMETHEUS_PASSWORD`. These values are cluster-specific and
+secret-backed. See [Argus agent](argus-agent.md) for setup and semantics.
+
+The *arr manifests use `PUID`, `PGID`, `TZ`, and `UMASK`, plus app-specific URL-base variables where configured:
+`SONARR__SERVER__URLBASE`, `RADARR__SERVER__URLBASE`, and `LIDARR__SERVER__URLBASE`. See [The *arr apps](arr.md)
+for their meaning and how app configuration is loaded. Headlamp's OIDC callback is supplied through the
+Secret-backed `OIDC_CALLBACK_URL`; see [Single sign-on](sso.md).
 
 ## Labels
 

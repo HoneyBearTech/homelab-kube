@@ -10,7 +10,7 @@ With an admin kubeconfig and `helm`:
 ```sh
 helm repo add argo https://argoproj.github.io/argo-helm
 helm repo update argo
-helm install argocd argo/argo-cd --version 10.11.6 --namespace argocd --create-namespace \
+helm install argocd argo/argo-cd --version 10.17.1 --namespace argocd --create-namespace \
   --set server.service.type=LoadBalancer --set dex.enabled=false
 kubectl -n argocd rollout status deploy/argocd-server
 kubectl -n argocd get svc argocd-server   # EXTERNAL-IP is Argo CD's address
