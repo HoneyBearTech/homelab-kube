@@ -3,8 +3,8 @@
 ## What Sean asked for
 
 "Ensure that all my repos that have renovate allow the renovate PRs to auto
-merge", on the homelab-atlas model: every update, majors included, merges once
-all checks pass, after a 3-day wait.
+merge", on the model another of the owner's stacks uses: every update, majors
+included, merges once all checks pass, after a 3-day wait.
 
 ## What we found
 
@@ -16,7 +16,7 @@ all checks pass, after a 3-day wait.
 ## What we'll change
 
 1. `renovate.json`: turn on auto-merge for every update, majors included, the
-   way homelab-atlas does it: `automerge: true`, squash merges,
+   way another of the owner's stacks does it: `automerge: true`, squash merges,
    `platformAutomerge: true` (GitHub merges as soon as the required checks
    pass); new versions wait 3 days before they are proposed
    (`minimumReleaseAge`, with `timestamp-optional` so a registry without release
