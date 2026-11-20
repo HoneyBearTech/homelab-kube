@@ -22,7 +22,7 @@ principles applied, and how common weaknesses are countered.
 2. **The network → the cluster's addresses.** The API, Argo CD and Headlamp trust their own logins; the network
    in front is trusted to be the owner's.
 3. **The Headlamp pod → the API.** The pod's own ServiceAccount has no cluster role; requests carry the user's token.
-4. **CI → the repository.** Workflows get a read-only token by default; only release and auto-merge jobs get more,
+4. **CI → the repository.** Workflows get a read-only token by default; only the release job gets more (Renovate merges through its own app),
    and only for what they do.
 
 ## Secure design principles

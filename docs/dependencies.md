@@ -37,17 +37,27 @@ To update the Python tools: `uv pip compile --generate-hashes --universal requir
 - **Renovate** ([`renovate.json`](../renovate.json), run by the Mend Renovate GitHub App) proposes updates for Argo CD
   charts in `apps/` and `bootstrap/`, Kubernetes images in `manifests/`, Python requirements, and GitHub Actions.
   It checks before 6am on Monday in America/Chicago, groups minor and patch updates, and keeps major updates separate.
-  Renovate opens pull requests and a dependency dashboard issue. **Nothing is merged automatically**: a merge deploys,
-  so the maintainer reads release notes and merges by hand ([upgrading.md](upgrading.md#bumping-a-chart)).
+  Renovate opens pull requests and a dependency dashboard issue.
+- **Renovate merges its updates once every required check has passed**, majors and image rebuilds included: it turns
+  on GitHub's auto-merge for its pull requests, which are squash-merged when the manifest policy check, schema
+  validation, CodeQL and dependency review have passed. Nothing skips a check, and a failing update stays open for
+  the maintainer. The checks read the manifests; none of them runs the cluster.
+- **A new version waits three days after its release** (`minimumReleaseAge`), so a release that is pulled or fixed
+  within days doesn't reach the cluster. Fixes for vulnerability alerts and image rebuilds (a new digest under the
+  same tag) skip the wait. A version from a registry that reports no release date isn't held back either.
+- **Longhorn and Argo CD are the exception and are merged by hand**: Longhorn must move one minor version at a time,
+  and Argo CD's upgrade notes need reading first. Their pull requests stay open, separate from the minor and patch
+  group, and say so; the maintainer reads the release notes first
+  ([upgrading.md](upgrading.md#bumping-a-chart)). The rule is in `renovate.json`.
 - **Dependabot alerts** remain enabled for vulnerability findings and are triaged below. Disable Dependabot security
   updates after migrating version updates to Renovate. Renovate also raises OSV vulnerability alerts labeled `security`.
-- **A merge deploys.** Argo CD syncs `main` automatically, so every merge reaches the maintainer's cluster within
-  minutes.
+- **A merge deploys.** Argo CD syncs `main` automatically, so every merge, the automatic ones included, reaches the
+  maintainer's cluster within minutes.
 - **Dependency review** blocks a pull request that adds a Python or Actions dependency with a known vulnerability
   of moderate severity or higher, or a license outside the allowlist.
 - The CI-only tools pinned in `run:` steps (actionlint, gitleaks, kubeconform) aren't seen by dependency managers;
   they're bumped by hand at least every quarter.
-- **Nothing in the cluster updates itself from a registry.** Argo CD applies only what is merged.
+- **Nothing in the cluster updates itself from a registry.** Argo CD applies only what is merged into `main`.
 
 ## Policy for vulnerabilities in dependencies
 

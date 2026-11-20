@@ -1,6 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "description": "Helm charts, Kubernetes images, Python requirements, and GitHub Actions. Pull requests only: a merge deploys, so every update waits for the maintainer (docs/dependencies.md).",
+  "description": "Helm charts, Kubernetes images, Python requirements, and GitHub Actions. Renovate merges its pull requests once every required check has passed, after a 3-day wait, except Longhorn and Argo CD, which wait for the maintainer (docs/dependencies.md). A merge deploys: Argo CD syncs main within minutes.",
   "extends": [
     "config:recommended",
     ":dependencyDashboard",
@@ -23,7 +23,12 @@
       "/^manifests/.+\\.ya?ml$/"
     ]
   },
-  "automerge": false,
+  "automerge": true,
+  "automergeType": "pr",
+  "automergeStrategy": "squash",
+  "platformAutomerge": true,
+  "minimumReleaseAge": "3 days",
+  "minimumReleaseAgeBehaviour": "timestamp-optional",
   "assignees": [
     "HoneyBearTech"
   ],
@@ -37,7 +42,7 @@
   "commitBodyTable": true,
   "packageRules": [
     {
-      "description": "Group minor and patch updates together for maintainer review.",
+      "description": "Group minor and patch updates together (they merge together once every required check has passed).",
       "matchUpdateTypes": [
         "minor",
         "patch"
@@ -64,13 +69,25 @@
       "versioning": "regex:^version-(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)\\.(?<build>\\d+)$"
     },
     {
-      "description": "Longhorn and Argo CD can need upgrade steps (one Longhorn minor at a time; Argo CD's notes): their PRs say so.",
+      "description": "An image rebuild (a new digest under the same tag) skips the 3-day wait: Docker Hub dates a rebuild by the tag's last push, so a tag rebuilt about weekly would restart the clock each time and never be proposed. The required checks still gate it.",
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchUpdateTypes": [
+        "digest"
+      ],
+      "minimumReleaseAge": null
+    },
+    {
+      "description": "Kept manual: Longhorn must move one minor version at a time, and Argo CD's upgrade notes need reading first. Their pull requests stay open for the maintainer, separate from the minor and patch group, and say so.",
       "matchPackageNames": [
         "longhorn",
         "argo-cd"
       ],
+      "automerge": false,
+      "groupName": null,
       "prBodyNotes": [
-        "Read the upgrade notes before merging: a merge deploys this. Longhorn upgrades one minor version at a time."
+        "Read the upgrade notes before merging: a merge deploys this. Longhorn upgrades one minor version at a time. This update is not merged automatically."
       ]
     }
   ],
