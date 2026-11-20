@@ -5,7 +5,9 @@ Every change reaches the cluster the same way: a pull request to `main`, CI, a m
 
 ## Bumping a chart
 
-Renovate opens a pull request for each new chart version (and image digest); nothing merges by itself. For each:
+Renovate opens a pull request for each new chart version (and image digest) and merges it once every required
+check has passed, after a three-day wait. Longhorn and Argo CD are the exception: nothing merges those by itself.
+For each of those:
 
 1. Read the chart's release notes and the app's: look for changed values, CRD changes and data migrations.
 2. Check the PR's change to `targetRevision`, and adjust `valuesObject` in the same PR if the chart needs it.
@@ -14,8 +16,8 @@ Renovate opens a pull request for each new chart version (and image digest); not
 
 ## Upgrading Argo CD
 
-Argo CD manages its own chart ([`apps/argocd.yaml`](../apps/argocd.yaml)): Renovate proposes the new version, and
-the merge upgrades it. Read the chart's upgrade notes first (CRD or values changes). If an upgrade leaves Argo CD
+Argo CD manages its own chart ([`apps/argocd.yaml`](../apps/argocd.yaml)): Renovate proposes the new version but
+doesn't merge it; the merge upgrades it. Read the chart's upgrade notes first (CRD or values changes). If an upgrade leaves Argo CD
 unable to sync, it can't fix itself: roll back from a server with the chart's previous version, then revert the PR:
 
 ```sh

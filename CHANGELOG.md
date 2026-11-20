@@ -23,6 +23,8 @@ All notable changes to homelab-kube are documented here. The format follows
 
 ### Changed
 
+- Renovate merges its pull requests once every required check has passed, after a three-day wait for new
+  versions; Longhorn and Argo CD stay manual.
 - The *arr claims are also `Prune=false`, so removing their files from git can't prune them.
 - The media trial is stopped: its Sonarr and Radarr, their Services, Ingresses and network policy are removed,
   since the *arr shadows in `arr` serve the same paths. Its claims stay.
